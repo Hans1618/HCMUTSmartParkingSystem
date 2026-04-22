@@ -1,0 +1,159 @@
+/* Account Page */
+.account-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  gap: var(--space-sm);
+}
+
+.account-avatar-wrap {
+  position: relative;
+  margin-bottom: var(--space-sm);
+}
+
+.account-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-2xl);
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-medium);
+}
+
+.account-avatar .display-md {
+  font-size: 2rem;
+}
+
+.account-role-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px var(--surface);
+}
+
+.account-name {
+  margin-top: var(--space-xs);
+}
+
+.account-role-chip {
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  gap: 6px;
+}
+
+/* Balance */
+.account-balance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+}
+
+.account-balance-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.account-balance-left > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Section */
+.account-section {
+  margin-bottom: var(--space-lg);
+}
+
+.account-section-title {
+  color: var(--on-surface-variant);
+  margin-bottom: var(--space-md);
+}
+
+/* Info Card */
+.account-info-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.account-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.account-info-row:nth-child(odd) {
+  background: var(--surface-container-lowest);
+}
+
+.account-info-row:nth-child(even) {
+  background: var(--surface);
+}
+
+.account-info-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--surface-container-high);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-surface-variant);
+  flex-shrink: 0;
+}
+
+.account-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* Menu */
+.account-menu {
+  padding: 0;
+  overflow: hidden;
+}
+
+.account-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+
+.account-menu-item:hover {
+  background: var(--surface-container-low);
+}
+
+.account-menu-item .body-md {
+  flex: 1;
+}
+
+/* Logout */
+.account-logout {
+  margin-bottom: var(--space-md);
+}
+
+.account-version {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}

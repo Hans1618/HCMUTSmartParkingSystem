@@ -1,0 +1,74 @@
+.parking-card {
+  padding: var(--space-lg);
+}
+
+.parking-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.parking-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.parking-card-zone-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.parking-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.parking-card-desc {
+  color: var(--on-surface-variant);
+}
+
+.parking-card-capacity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.parking-card-capacity-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parking-card-meta {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.parking-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--on-surface-variant);
+}
+
+.parking-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+}

@@ -1,0 +1,229 @@
+.parking-header {
+  padding-top: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.parking-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.parking-header p {
+  margin-top: 2px;
+}
+
+/* View Toggle */
+.parking-view-toggle {
+  display: flex;
+  background: var(--surface-container-high);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+}
+
+.parking-view-btn {
+  width: 30px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--on-surface-variant);
+  transition: all var(--transition-fast);
+}
+
+.parking-view-btn.active {
+  background: var(--surface-container-lowest);
+  color: var(--primary);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Map Section */
+.parking-map-section {
+  margin-bottom: var(--space-sm);
+}
+
+.parking-map-container {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-sm);
+  padding: 0;
+}
+
+.parking-map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+.parking-map-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  pointer-events: none;
+}
+
+/* Map Markers — positioned via CSS grid areas */
+.parking-map-marker {
+  position: absolute;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-lg);
+  padding: 4px 8px;
+  min-width: 36px;
+  box-shadow: var(--shadow-medium);
+  transition: all var(--transition-fast);
+  z-index: 2;
+}
+
+.parking-map-marker:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: var(--shadow-hover);
+  z-index: 3;
+}
+
+.marker-available {
+  background: var(--tertiary);
+  color: white;
+}
+
+.marker-nearly-full {
+  background: var(--secondary);
+  color: white;
+}
+
+.marker-full {
+  background: var(--error);
+  color: white;
+  opacity: 0.7;
+}
+
+.marker-letter {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 0.8125rem;
+  line-height: 1;
+}
+
+.marker-count {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.5625rem;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+/* Position markers on the campus map */
+.parking-map-marker[data-zone="A"] {
+  top: 50%;
+  left: 33%;
+}
+
+.parking-map-marker[data-zone="B"] {
+  top: 65%;
+  left: 18%;
+}
+
+.parking-map-marker[data-zone="C"] {
+  top: 22%;
+  left: 65%;
+}
+
+/* Compact Zone List */
+.parking-compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.parking-compact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  width: 100%;
+}
+
+.parking-compact-item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.parking-compact-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.parking-compact-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.parking-compact-bar {
+  display: none;
+}
+
+/* Search */
+.parking-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--surface-container-lowest);
+  border-radius: var(--radius-xl);
+  padding: 0 var(--space-md);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.parking-search-input {
+  background: transparent;
+  padding: var(--space-md) var(--space-sm);
+  box-shadow: none;
+}
+
+.parking-zones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.parking-legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-md);
+}
+
+.parking-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.parking-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}

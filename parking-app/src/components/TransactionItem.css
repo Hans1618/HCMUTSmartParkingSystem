@@ -1,0 +1,70 @@
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-fast);
+}
+
+.txn-bg-surface {
+  background: var(--surface);
+}
+
+.txn-bg-lowest {
+  background: var(--surface-container-lowest);
+}
+
+.transaction-item:hover {
+  background: var(--surface-container-low);
+}
+
+.txn-icon-wrap {
+  flex-shrink: 0;
+}
+
+.txn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.txn-icon-credit {
+  background: var(--tertiary-fixed);
+  color: var(--tertiary);
+}
+
+.txn-icon-debit {
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+}
+
+.txn-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.txn-details .title-sm {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.txn-amount {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.txn-amount-credit {
+  color: var(--tertiary);
+}
+
+.txn-amount-debit {
+  color: var(--on-surface);
+}

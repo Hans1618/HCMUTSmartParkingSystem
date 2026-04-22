@@ -1,0 +1,46 @@
+.checkin-header {
+  padding-top: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.checkin-zone-card {
+  margin-bottom: var(--space-xl);
+}
+
+.checkin-zone-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.checkin-zone-header > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkin-zone-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.checkin-detail-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.checkin-form {
+  margin-bottom: var(--space-xl);
+}
+
+.checkin-btn {
+  margin-bottom: var(--space-xl);
+}
+
+.checkin-btn.confirming {
+  opacity: 0.8;
+  pointer-events: none;
+}

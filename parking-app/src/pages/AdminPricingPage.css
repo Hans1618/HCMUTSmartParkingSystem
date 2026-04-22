@@ -1,0 +1,160 @@
+.admin-pricing-header {
+  padding-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pricing-grid,
+.priv-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.pricing-card {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.pricing-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.pricing-zone-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.pricing-card-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pricing-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pricing-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pricing-input-row .input-field {
+  flex: 1;
+  font-family: "Manrope", sans-serif;
+  font-size: 1rem;
+}
+
+.pricing-preview {
+  color: var(--on-surface-variant);
+  margin-top: 2px;
+}
+
+.pricing-card-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+.pricing-card-actions .btn {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.75rem;
+}
+
+/* Privileges */
+.priv-card {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.priv-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.priv-card-top > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.priv-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
+  background: var(--secondary-container);
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.priv-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.priv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.priv-field .input-field {
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.priv-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.priv-actions .btn {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.75rem;
+}
+
+/* Toast */
+.admin-toast {
+  position: fixed;
+  bottom: calc(var(--space-xl) + 60px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--on-surface);
+  color: white;
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  z-index: 100;
+  box-shadow: var(--shadow-hover);
+  animation: fade-in 0.3s ease-out;
+}

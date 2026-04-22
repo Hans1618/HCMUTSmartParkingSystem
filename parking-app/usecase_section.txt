@@ -1,0 +1,1714 @@
+
+=== Page 19 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+NFR-06
+The system shall enforce role-based access control for
+all administrative and operator-level functions.
+Security
+NFR-07
+The system shall protect communication with external
+services and user sessions using secure transport and
+secure session handling mechanisms.
+Security
+NFR-08
+The system shall preserve immutable audit records for
+parking access events, manual overrides, and
+payment-related status changes.
+Auditability
+NFR-09
+The system shall be available for at least 99% of the
+scheduled operational time of campus parking services.
+Availability
+NFR-10
+The application interface shall present key parking
+states in a way that an average first-time user can
+understand without training.
+Usability
+NFR-11
+The system shall be modular enough to allow future
+extension to additional parking areas, sensors, or gate
+devices without redesigning the whole platform.
+Maintainability
+NFR-12
+Time-related records used for parking sessions and
+billing shall use a consistent campus-standard time
+source.
+Data Integrity
+2.3
+Non-Interactive Requirements
+ID
+Non-Interactive Requirement
+Category
+NIR-01
+The system shall periodically synchronize user profile
+and role data from HCMUT_DATACORE without
+requiring manual action.
+Synchronization
+NIR-02
+The system shall continuously receive and process
+occupancy updates from connected IoT gateways.
+Automation
+NIR-03
+The system shall automatically refresh parking-zone
+summaries and slot availability views.
+Automation
+Page 17
+
+=== Page 20 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+NIR-04
+The system shall automatically recalculate
+parking-zone capacity summaries when slot states
+change.
+Background
+Processing
+NIR-05
+The system shall automatically send billing requests
+at the end of a billing cycle for user groups that use
+deferred charging.
+Billing
+Automation
+NIR-06
+The system shall automatically log operational
+anomalies such as gateway disconnects, outdated
+sensor data, and payment synchronization failures.
+Monitoring
+NIR-07
+The system shall automatically release a parking slot
+after the corresponding session is successfully
+completed.
+Session Lifecycle
+NIR-08
+The system shall automatically keep a timestamped
+history of policy changes and override actions for later
+audit.
+Audit
+Automation
+Page 18
+
+=== Page 21 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3
+Use-case Diagram and Use-case Scenario
+3.1
+Whole System Use-case Diagram
+Figure 1: Whole-system Use-case Diagram of the Smart Parking System
+3.2
+MOD 1 – Authentication and User Access
+Mapped FRs: FR-01, FR-02, FR-03, FR-04, FR-05, FR-06
+Related NFRs: NFR-04, NFR-06, NFR-07, NFR-08
+Related NIRs: NIR-01
+3.2.1
+Module Description
+This module controls how institutional users are identified and authorized before
+they can access protected parking functions. It relies on HCMUT_SSO to verify
+user identity and retrieves authoritative profile data from HCMUT_DATACORE
+in order to determine the user’s role and applicable parking privilege. Based on
+the active parking policy, the system either grants or denies access to the requested
+function. The module also records authentication and authorization outcomes to
+support traceability, auditing, and secure operation across the entire Smart Parking
+System.
+Page 19
+
+=== Page 22 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Figure 2: MOD 1 – Authentication and User Access Use-case Diagram
+3.2.2
+Use-case Scenario: Authenticate User for Parking Access
+Field
+Description / Content
+Use Case ID
+UC_AUTH_01
+Use Case Name
+Authenticate User for Parking Access
+Created by
+Le Manh Quan
+Overview
+This use case describes how the system verifies the
+identity of a university member through HCMUT_SSO,
+retrieves the user’s institutional profile from
+HCMUT_DATACORE, checks parking privilege under
+the active policy, and then grants or denies access to
+protected parking functions.
+Actor
+Primary: University Member
+Secondary: HCMUT_SSO, HCMUT_DATACORE
+Trigger
+The university member attempts to access a protected
+parking-related function through the parking application
+or another authorized system entry point.
+Page 20
+
+=== Page 23 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Pre-condition
+The Smart Parking System is operational. The user has a
+valid university account. HCMUT_SSO is available for
+identity verification. HCMUT_DATACORE is available
+for profile retrieval. The parking privilege policy has
+already been configured in the system.
+Post-condition
+Success: The user is authenticated, the relevant profile
+data is synchronized, parking privilege is determined, and
+access to the requested function is granted.
+Failure: Access is denied and the corresponding event is
+recorded in the system log.
+Main Flow
+1. The university member initiates a protected parking-related action.
+2. The system sends an authentication request to HCMUT_SSO.
+3. HCMUT_SSO validates the user’s credentials.
+4. HCMUT_SSO returns a successful authentication result to the system.
+5. The system requests the user’s institutional profile from HCMUT_DATACORE.
+6. The system retrieves the user’s role and related profile information.
+7. The system evaluates the user’s parking privilege according to the active
+policy.
+8. The system records the successful authentication and authorization result.
+9. The system grants access to the requested parking function.
+Alternative Flow
+– AF-1: The user is authenticated successfully, but the active policy grants only
+limited parking privilege. The system allows access only to the permitted
+parking functions and informs the user of the restriction.
+– AF-2: The user’s profile data is already available from a recent synchroniza-
+tion cycle. The system reuses the available profile information and continues
+with privilege evaluation.
+Page 21
+
+=== Page 24 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Exception Flow
+– EF-1: HCMUT_SSO rejects the authentication request. The system denies
+access, displays an authentication failure message, and records the failed at-
+tempt.
+– EF-2: HCMUT_DATACORE is unavailable or does not return valid profile
+data. The system stops the access process, displays a service error message,
+and logs the incident.
+– EF-3: The user is authenticated successfully but does not have valid parking
+privilege under the active policy. The system denies access and records the
+access rejection reason.
+3.2.3
+Use-case Scenario: Retrieve User Profile from HCMUT_DATACORE
+Field
+Description / Content
+Use Case ID
+UC_AUTH_02
+Use Case Name
+Retrieve User Profile from HCMUT_DATACORE
+Created by
+Le Manh Quan
+Overview
+This use case describes how the Smart Parking System
+retrieves authoritative institutional profile information
+from HCMUT_DATACORE after a university member
+has been successfully authenticated. The retrieved data is
+used to identify the user’s role, determine relevant
+attributes, and support later parking privilege evaluation.
+Actor
+Primary: Smart Parking System
+Secondary: HCMUT_DATACORE
+Trigger
+The system receives a successful authentication result
+from HCMUT_SSO and needs institutional profile data
+for authorization.
+Page 22
+
+=== Page 25 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Pre-condition
+The user has been authenticated successfully.
+HCMUT_DATACORE is reachable or a valid
+synchronization path is available. The user identity
+returned by HCMUT_SSO can be matched to an
+institutional record.
+Post-condition
+Success: The user’s institutional profile is retrieved or
+refreshed successfully, and the profile data becomes
+available for subsequent privilege evaluation.
+Failure: Profile retrieval fails, no valid authoritative data
+is available, and the system stops the authorization
+process while recording the incident.
+Main Flow
+1. The Smart Parking System receives a successful authentication result from
+HCMUT_SSO.
+2. The system extracts the institutional user identifier from the authentication
+result.
+3. The system sends a profile retrieval request to HCMUT_DATACORE.
+4. HCMUT_DATACORE validates the request and locates the corresponding
+user record.
+5. HCMUT_DATACORE returns institutional profile information, including
+role-related and identity-related attributes.
+6. The system validates the completeness and consistency of the returned profile
+data.
+7. The system stores or refreshes the profile information in its working autho-
+rization context.
+8. The system marks the profile retrieval step as successful and prepares the
+data for parking privilege evaluation.
+Alternative Flow
+Page 23
+
+=== Page 26 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– AF-1: A recent synchronized copy of the user’s profile already exists in the
+system. The system performs a lightweight freshness check instead of a full
+retrieval.
+– AF-2: HCMUT_DATACORE returns additional institutional attributes be-
+yond the minimum required fields. The system stores the relevant subset for
+later authorization logic.
+Exception Flow
+– EF-1: HCMUT_DATACORE does not respond within the accepted timeout
+period. The system aborts profile retrieval and reports a service-unavailable
+condition.
+– EF-2: The authenticated identity cannot be matched to a valid institutional
+record. The system treats the request as unresolved and denies further access
+processing.
+– EF-3: HCMUT_DATACORE returns incomplete, invalid, or inconsistent
+profile data. The system rejects the data, records the anomaly, and stops the
+authorization flow.
+3.2.4
+Use-case Scenario: Check Parking Privilege
+Field
+Description / Content
+Use Case ID
+UC_AUTH_03
+Use Case Name
+Check Parking Privilege
+Created by
+Le Manh Quan
+Overview
+This use case describes how the Smart Parking System
+evaluates whether an authenticated university member is
+allowed to use protected parking functions based on the
+active parking policy, the user’s institutional role, and the
+current access rules configured by the university.
+Actor
+Primary: Smart Parking System
+Secondary: University Member
+Page 24
+
+=== Page 27 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Trigger
+The user’s institutional profile has been retrieved
+successfully and the system must determine parking
+eligibility.
+Pre-condition
+The user has already been authenticated successfully.
+Valid profile data is available in the authorization
+context. At least one active parking privilege policy exists
+in the system.
+Post-condition
+Success: The system determines the user’s parking
+privilege and either grants full access, grants limited
+access, or denies access according to the active policy.
+Failure: The system cannot determine privilege reliably
+because of missing policy or inconsistent input data, and
+the request is denied or suspended.
+Main Flow
+1. The system loads the authenticated user’s institutional role and related profile
+attributes.
+2. The system retrieves the active parking privilege policy and any relevant
+configuration rules.
+3. The system compares the user’s role and profile attributes against the current
+parking access rules.
+4. The system determines whether the user is eligible for the requested protected
+parking function.
+5. The system classifies the result as full privilege, limited privilege, or denied
+privilege.
+6. The system stores the authorization decision in the active session context.
+7. The system returns the privilege result to the calling process for final access
+handling.
+Alternative Flow
+Page 25
+
+=== Page 28 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– AF-1: The user’s role is valid for parking access but only for a restricted set
+of parking functions or parking areas. The system returns a limited-privilege
+decision.
+– AF-2: The current policy includes special treatment for a particular user
+group (for example, staff or postgraduate users).
+The system applies the
+group-specific rule when evaluating privilege.
+Exception Flow
+– EF-1: No active parking privilege policy is available.
+The system cannot
+determine eligibility and denies access by default.
+– EF-2: The user profile lacks required role-related information. The system
+treats the authorization input as incomplete and rejects access.
+– EF-3: The policy contains conflicting or inconsistent rules for the user’s cate-
+gory. The system blocks the request and records the issue for administrative
+review.
+3.2.5
+Use-case Scenario: Log Access Decision
+Field
+Description / Content
+Use Case ID
+UC_AUTH_04
+Use Case Name
+Log Access Decision
+Created by
+Le Manh Quan
+Overview
+This use case describes how the Smart Parking System
+records the outcome of authentication and authorization
+processing for auditing and traceability purposes. The
+logged information may include the actor identity,
+timestamp, request source, authentication status,
+privilege decision, and denial reason when applicable.
+Actor
+Primary: Smart Parking System
+Secondary: System Administrator
+Trigger
+The authentication and authorization process reaches a
+final access decision, whether successful or unsuccessful.
+Page 26
+
+=== Page 29 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Pre-condition
+An authentication and authorization attempt has been
+processed. Relevant contextual data such as actor
+identity, request source, decision result, and timestamp
+are available.
+Post-condition
+Success: The access decision is recorded in the system
+log with sufficient detail for later audit and investigation.
+Failure: The log cannot be stored normally; the system
+preserves the access decision result if possible and raises
+an operational logging issue.
+Main Flow
+1. The system receives the final authentication and authorization result.
+2. The system collects contextual information, including user identity, request
+source, timestamp, authentication outcome, and privilege decision.
+3. The system adds any relevant explanatory data, such as denial reason, limited-
+access rule, or service dependency status.
+4. The system formats the information into an auditable access-event record.
+5. The system writes the record into the system log or audit storage service.
+6. The system confirms that the access-event record has been stored successfully.
+Alternative Flow
+– AF-1: The access result is successful. The system records a normal autho-
+rization event with the granted privilege level.
+– AF-2: The access result is denied.
+The system records the denial event
+together with the most relevant rejection reason for later inspection.
+Exception Flow
+– EF-1: The logging service or storage layer is temporarily unavailable. The
+system places the log entry into a fallback queue or temporary buffer if such
+a mechanism exists, and records the operational issue.
+Page 27
+
+=== Page 30 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-2: Mandatory context fields are missing when the log entry is being pre-
+pared. The system writes a reduced log record with an integrity warning
+instead of a complete record.
+– EF-3: The system detects that the same access attempt is being logged re-
+peatedly because of a retry or duplicate event. The system suppresses or
+merges duplicate records according to the logging rule.
+3.3
+MOD 2 – Check-in & Temporary Entry
+Mapped FRs: FR-07, FR-08, FR-09, FR-10, FR-11
+Related NFRs: NFR-01, NFR-03, NFR-10
+Related NIRs: NIR-07
+3.3.1
+Module Description
+This module manages the entry-side lifecycle of a parking session for both insti-
+tutional users and temporary users. It supports the beginning of a parking session
+when a vehicle arrives at the entrance, validates the entry request, handles tempo-
+rary ticket issuance for visitors or exceptional cases, and assigns an available parking
+slot or target zone based on the current capacity state. If the selected parking area
+no longer has valid capacity, the module denies entry and stops the creation of a new
+session. In this way, the module helps reduce congestion at the gate, keeps session
+data consistent from the beginning, and ensures that the parking area is used within
+its available capacity.
+Figure 3: MOD 2 – Check-in & Temporary Entry Use-case Diagram
+Page 28
+
+=== Page 31 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3.3.2
+Use-case Scenario: Start Parking Session
+Field
+Description / Content
+Use Case ID
+UC_CI_01
+Use Case Name
+Start Parking Session
+Created by
+Pham Vo Tien Kha
+Overview
+This use case describes how the system starts a parking
+session when a vehicle arrives at the entrance. The flow
+covers both standard institutional entry and temporary
+entry, including request validation, temporary ticket
+handling when needed, slot or zone assignment, and entry
+rejection when no capacity is available.
+Actor
+Primary: University Member / Visitor / Temporary User
+Secondary: Parking Operator
+Trigger
+A vehicle arrives at a parking entrance and requests
+check-in.
+Pre-condition
+The Smart Parking System and the gate service are
+operational. Current parking availability information is
+accessible for the selected area. For institutional entry,
+the user has already been granted parking privilege by the
+authentication and access module. For temporary entry,
+the operator can issue a temporary ticket when required.
+Post-condition
+Success: A new parking session is created, entry time
+and entry source are recorded, and the session is linked to
+an assigned slot or target zone. For temporary access, a
+temporary ticket is issued and attached to the session
+when applicable.
+Failure: Entry is rejected, the barrier remains closed,
+and no new parking session is created.
+Main Flow
+1. A vehicle arrives at the parking entrance and requests check-in.
+2. The system starts the parking-session creation process.
+Page 29
+
+=== Page 32 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3. The system determines whether the requester is a University Member or a
+Visitor / Temporary User.
+4. The system performs Validate Entry Request.
+5. If the requester is a Visitor / Temporary User or cannot use the normal
+institutional identification flow, the system performs Issue Temporary Ticket.
+6. The system checks the current capacity of the selected parking area.
+7. The system performs Assign Parking Slot / Zone.
+8. The system records entry time, entry source, and related parking-session in-
+formation.
+9. The system creates the new parking session record.
+10. The system confirms successful entry and allows the vehicle to proceed.
+Alternative Flow
+– AF-1: The system cannot assign an exact parking slot at the entrance. The
+system assigns a target parking zone instead and lets the vehicle continue.
+– AF-2: A Parking Operator assists a Visitor / Temporary User in providing
+the required information before the system issues a temporary ticket.
+Exception Flow
+– EF-1: The selected parking area is full. The system performs Deny Entry
+When Parking Is Full, rejects the request, and does not create a new session.
+– EF-2: The entry request is invalid, incomplete, or inconsistent. The system
+keeps the barrier closed and asks for operator support.
+– EF-3: A duplicate or unresolved active session is detected for the same user,
+ticket, or vehicle-related identifier. The system blocks the new check-in re-
+quest and records the anomaly.
+3.3.3
+Use-case Scenario: Validate Entry Request
+Page 30
+
+=== Page 33 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Field
+Description / Content
+Use Case ID
+UC_CI_02
+Use Case Name
+Validate Entry Request
+Created by
+Pham Vo Tien Kha
+Overview
+This use case describes how the system checks whether an
+incoming parking-entry request is valid before allowing a
+new parking session to continue. The validation covers
+user category, request completeness, session consistency,
+and current parking capacity for the selected parking area.
+Actor
+Primary: Smart Parking System
+Secondary: University Member / Visitor / Temporary
+User, Parking Operator
+Trigger
+A vehicle has initiated the check-in process and the
+system needs to verify whether the entry request can be
+accepted.
+Pre-condition
+The Smart Parking System is operational. A check-in
+request has been received from the entrance point.
+Required request information such as user category,
+identification source, or temporary-entry input is available
+or can be provided with operator support.
+Post-condition
+Success: The system confirms that the entry request is
+valid and allows the check-in flow to continue to the next
+step.
+Failure: The request is rejected or suspended for
+operator review, and no parking session is created at this
+stage.
+Main Flow
+1. The system receives the parking-entry request from the entrance point.
+2. The system identifies whether the requester is a University Member or a
+Visitor / Temporary User.
+3. The system checks whether the request contains the required entry informa-
+Page 31
+
+=== Page 34 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+tion.
+4. The system verifies that the request data is complete and internally consistent.
+5. The system checks whether there is already an unresolved or duplicate active
+session for the same requester or related identifier.
+6. The system checks the current availability status of the selected parking area.
+7. The system determines that the entry request is valid.
+8. The system returns a successful validation result to the check-in flow.
+Alternative Flow
+– AF-1: The requester is a Visitor / Temporary User. The system accepts the
+request structure but marks it for temporary-ticket handling in the next step.
+– AF-2: A Parking Operator assists in completing missing non-critical infor-
+mation before the validation result is finalized.
+Exception Flow
+– EF-1: Required entry information is missing or inconsistent.
+The system
+rejects the validation result and asks for correction or operator support.
+– EF-2: A duplicate or unresolved parking session is detected for the same
+requester, ticket, or vehicle-related identifier.
+The system blocks the new
+entry request and records the anomaly.
+– EF-3: The selected parking area has no available capacity. The system trig-
+gers Deny Entry When Parking Is Full and stops the check-in process.
+3.3.4
+Use-case Scenario: Issue Temporary Ticket
+Field
+Description / Content
+Use Case ID
+UC_CI_03
+Use Case Name
+Issue Temporary Ticket
+Created by
+Pham Vo Tien Kha
+Page 32
+
+=== Page 35 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Overview
+This use case describes how the system issues a temporary
+parking ticket for a Visitor / Temporary User or for an
+exceptional entry case where the normal institutional
+identification flow cannot be used. The ticket acts as the
+temporary identifier for the new parking session.
+Actor
+Primary: Parking Operator
+Secondary: Visitor / Temporary User
+Trigger
+The check-in flow determines that the requester needs
+temporary access instead of the normal institutional entry
+flow.
+Pre-condition
+The entry request has been received and identified as a
+temporary-entry case. The Parking Operator is available
+to assist if the temporary ticket cannot be issued
+automatically. The ticketing service is operational.
+Post-condition
+Success: A temporary ticket is generated, recorded, and
+linked to the corresponding parking session.
+Failure: No valid temporary ticket is created, and the
+requester cannot continue the temporary-entry process.
+Main Flow
+1. The system identifies that the requester needs temporary access.
+2. The Parking Operator starts the temporary-ticket issuance process.
+3. The system collects the required temporary-entry information from the Visi-
+tor / Temporary User.
+4. The system validates the provided temporary-entry data.
+5. The system generates a unique temporary ticket identifier.
+6. The system records the temporary ticket together with related entry meta-
+data.
+7. The system links the temporary ticket to the pending parking session.
+8. The system returns the issued temporary ticket for continued check-in pro-
+cessing.
+Page 33
+
+=== Page 36 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Alternative Flow
+– AF-1: The system issues the temporary ticket automatically after minimal
+information is provided, without requiring extended operator interaction.
+– AF-2: The Parking Operator enters additional descriptive information, such
+as a note about the exceptional case, before the ticket is finalized.
+Exception Flow
+– EF-1: The provided temporary-entry information is incomplete or invalid.
+The system does not issue the ticket and asks for correction.
+– EF-2: The system cannot generate a unique temporary ticket because of an
+internal service error. The request is suspended and the issue is logged.
+– EF-3: The Parking Operator cancels the temporary-entry process after deter-
+mining that the request should not proceed. The system stops ticket issuance
+and rejects the entry attempt.
+3.3.5
+Use-case Scenario: Assign Parking Slot / Zone
+Field
+Description / Content
+Use Case ID
+UC_CI_04
+Use Case Name
+Assign Parking Slot / Zone
+Created by
+Pham Vo Tien Kha
+Overview
+This use case describes how the system assigns an
+available parking slot or a target parking zone to a
+validated entry request. The assignment is based on
+current availability information and operational rules so
+that vehicles can be directed to a suitable location after
+entering the parking area.
+Actor
+Primary: Smart Parking System
+Secondary: University Member / Visitor / Temporary
+User
+Page 34
+
+=== Page 37 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Trigger
+An entry request has been validated successfully and the
+system must determine where the vehicle should be
+directed.
+Pre-condition
+The entry request is valid. Current parking availability
+information is accessible. At least one assignable slot or
+zone exists in the selected parking area.
+Post-condition
+Success: The system assigns an available parking slot or
+target parking zone and stores the assignment in the new
+parking session.
+Failure: No valid assignment is produced, and the
+check-in flow cannot continue normally.
+Main Flow
+1. The system receives a successful validation result for the entry request.
+2. The system loads the current availability information for the relevant parking
+area.
+3. The system evaluates candidate slots or zones according to the active assign-
+ment rule.
+4. The system selects a suitable available slot or target zone.
+5. The system stores the assignment result in the parking-session context.
+6. The system returns the assigned slot or zone to the check-in process.
+7. The system allows the driver to continue toward the assigned destination.
+Alternative Flow
+– AF-1: The system cannot determine an exact slot reliably at the entrance.
+The system assigns a target zone instead of a specific slot.
+– AF-2: More than one suitable candidate is available. The system selects one
+according to a simple operational preference such as nearest available zone or
+current load distribution.
+Page 35
+
+=== Page 38 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Exception Flow
+– EF-1: No available slot or zone can be assigned because the selected parking
+area has become full during processing. The system stops the assignment and
+triggers Deny Entry When Parking Is Full.
+– EF-2: Availability data is unavailable, outdated, or inconsistent. The system
+cannot complete the assignment reliably and records the issue.
+– EF-3: The assignment record cannot be stored due to a system-level error.
+The system prevents entry completion and keeps the session in an incomplete
+state for review.
+3.3.6
+Use-case Scenario: Deny Entry When Parking Is Full
+Field
+Description / Content
+Use Case ID
+UC_CI_05
+Use Case Name
+Deny Entry When Parking Is Full
+Created by
+Pham Vo Tien Kha
+Overview
+This use case describes how the system rejects a new
+parking-entry request when the selected parking area has
+no remaining valid capacity. The system stops the
+creation of a new parking session, keeps the barrier closed,
+and informs the requester that entry cannot proceed.
+Actor
+Primary: Smart Parking System
+Secondary: University Member / Visitor / Temporary
+User, Parking Operator
+Trigger
+During entry validation or slot/zone assignment, the
+system determines that the selected parking area has no
+available capacity.
+Pre-condition
+A new entry request is being processed. The system has
+checked or attempted to check current parking availability
+for the selected area. The remaining capacity is zero or
+not valid for safe admission.
+Page 36
+
+=== Page 39 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Post-condition
+Success: The entry request is rejected correctly, no new
+parking session is created, and the denial event is
+recorded.
+Failure: The denial decision cannot be completed
+normally due to an operational issue, and operator
+intervention may be required.
+Main Flow
+1. The system detects that the selected parking area has no available capacity.
+2. The system stops the normal check-in flow.
+3. The system rejects the current entry request.
+4. The system keeps the barrier closed and prevents a new parking session from
+being created.
+5. The system informs the requester that the parking area is full.
+6. The system records the denial event for traceability and later review.
+Alternative Flow
+– AF-1: The system can suggest that the requester try another parking area or
+return later, while still rejecting the current entry request.
+– AF-2: A Parking Operator provides manual guidance to redirect the requester
+to another suitable area outside the current zone.
+Exception Flow
+– EF-1: The capacity state becomes inconsistent during denial processing be-
+cause of delayed availability updates. The system preserves the denial result
+until the latest state is confirmed.
+– EF-2: The denial message cannot be displayed properly at the gate interface.
+The system still blocks entry and records the communication issue.
+– EF-3: The barrier-control response is not returned as expected after the
+denial decision. The system raises an operational alert and requires operator
+attention.
+Page 37
+
+=== Page 40 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3.4
+MOD 3 – Slot Monitoring and Availability
+Mapped FRs: FR-13, FR-14, FR-15, FR-16, FR-17, FR-18, FR-19, FR-20, FR-21
+Related NFRs: NFR-02, NFR-04, NFR-05, NFR-09, NFR-11
+Related NIRs: NIR-02, NIR-03, NIR-04, NIR-06
+3.4.1
+Module Description
+This module processes parking data collected from IoT sensors and converts it
+into meaningful parking availability information. It handles data collection, slot
+status updates, detection of full parking zones, and management of uncertain or
+missing data. The module also provides updated availability information for end
+users such as university members, visitors, and parking operators.
+Figure 4: MOD 3 – Slot Monitoring and Availability Use-case Diagram
+3.4.2
+Use-case Scenario: Update Parking Availability
+Field
+Description / Content
+Use Case ID
+UC_SLOT_01
+Use Case Name
+Update Parking Availability
+Created by
+Pham Nhat Khoi
+Overview
+This use case describes how the system processes
+collected sensor data to update parking slot status and
+availability, including detecting full-zone conditions and
+handling unknown states.
+Page 38
+
+=== Page 41 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Actor
+Primary: IoT Sensor / Gateway
+Secondary: University Member, Visitor, Parking Operator
+Trigger
+Sensor data is collected and sent to the system.
+Pre-condition
+Parking sensors and gateways are active, registered, and
+connected.
+Post-condition
+Success: Slot status and zone availability are updated
+and ready for display.
+Failure: Invalid or missing data results in unknown slot
+states or logged errors.
+Main Flow
+1. A parking sensor detects occupancy data.
+2. The gateway forwards the data to the system (Collect Sensor Data).
+3. The system validates and processes the received data.
+4. The system updates the corresponding parking slot status (Update Parking
+Availability).
+5. The system checks whether the parking zone has reached full capacity (Detect
+Full-Zone Condition).
+6. The system updates the availability status of the parking zone.
+7. The system makes updated availability information accessible to users (View
+Parking Availability).
+Alternative Flow
+– AF-1: Multiple sensor updates are received in a short time; the system pro-
+cesses them in batches.
+– AF-2: The system updates only zone-level availability when detailed slot-level
+data is not required.
+Exception Flow
+Page 39
+
+=== Page 42 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-1: Sensor data is missing or delayed; the system marks the slot as un-
+known (Mark Slot as Unknown).
+– EF-2: The received data is invalid or inconsistent; the system rejects the
+update and logs the anomaly.
+– EF-3: The gateway connection is lost; no updates are received and availability
+cannot be refreshed.
+3.4.3
+Use-case Scenario: Collect Sensor / Gateway Data
+Field
+Description / Content
+Use Case ID
+UC_SLOT_02
+Use Case Name
+Collect Sensor / Gateway Data
+Created by
+Pham Nhat Khoi
+Overview
+This use case describes how the system collects raw
+occupancy data from IoT sensors through gateways for
+further processing.
+Actor
+Primary: IoT Sensor / Gateway
+Trigger
+A parking sensor detects a change in occupancy status.
+Pre-condition
+Sensors and gateways are installed, configured, and
+connected to the system.
+Post-condition
+Success: Sensor data is successfully received and
+forwarded for processing.
+Failure: Data is not received or transmission fails.
+Main Flow
+1. The IoT sensor detects occupancy status.
+2. The sensor sends data to the gateway.
+3. The gateway aggregates and forwards data to the system.
+4. The system receives the data for processing.
+Exception Flow
+Page 40
+
+=== Page 43 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-1: Sensor fails to send data; no update is generated.
+– EF-2: Gateway connection is lost; data cannot be transmitted.
+3.4.4
+Use-case Scenario: Mark Slot Status as Unknown
+Field
+Description / Content
+Use Case ID
+UC_SLOT_03
+Use Case Name
+Mark Slot Status as Unknown
+Created by
+Pham Nhat Khoi
+Overview
+This use case describes how the system handles missing or
+unreliable data by marking parking slots as unknown.
+Actor
+Primary: System
+Trigger
+No valid data is received within a defined time or data is
+inconsistent.
+Pre-condition
+A parking slot exists in the system.
+Post-condition
+Success: The slot status is marked as unknown.
+Failure: The system cannot determine slot status due to
+system error.
+Main Flow
+1. The system monitors incoming sensor data.
+2. The system detects missing or invalid data.
+3. The system marks the corresponding slot as unknown.
+4. The system logs the event.
+Exception Flow
+– EF-1: System error prevents updating slot status.
+Page 41
+
+=== Page 44 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3.4.5
+Use-case Scenario: Detect Full-Zone Condition
+Field
+Description / Content
+Use Case ID
+UC_SLOT_04
+Use Case Name
+Detect Full-Zone Condition
+Created by
+Pham Nhat Khoi
+Overview
+This use case describes how the system determines
+whether a parking zone has reached full capacity.
+Actor
+Primary: System
+Trigger
+Parking slot status is updated.
+Pre-condition
+Slot data within a zone is available.
+Post-condition
+Success: The system determines and updates zone status
+(full or available).
+Failure: Zone status cannot be determined due to
+incomplete data.
+Main Flow
+1. The system receives updated slot information.
+2. The system calculates total occupied and available slots.
+3. The system determines whether the zone is full.
+4. The system updates the zone availability status.
+Exception Flow
+– EF-1: Incomplete slot data prevents accurate calculation.
+3.4.6
+Use-case Scenario: View Parking Availability
+Field
+Description / Content
+Use Case ID
+UC_SLOT_05
+Page 42
+
+=== Page 45 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Use Case Name
+View Parking Availability
+Created by
+Pham Nhat Khoi
+Overview
+This use case describes how users view real-time parking
+availability information.
+Actor
+Primary: University Member, Visitor
+Secondary: Parking Operator
+Trigger
+A user requests to view parking availability.
+Pre-condition
+Availability data is available in the system.
+Post-condition
+Success: The user is presented with current parking
+availability.
+Failure: Availability data cannot be displayed due to
+system issues.
+Main Flow
+1. The user accesses the parking system interface.
+2. The user requests parking availability information.
+3. The system retrieves the latest availability data.
+4. The system displays slot or zone availability to the user.
+Alternative Flow
+– AF-1: Only zone-level availability is displayed instead of detailed slot-level
+data.
+Exception Flow
+– EF-1: System fails to retrieve availability data.
+3.5
+MOD 4 – Guidance and Session Closure
+Mapped FRs: FR-12, FR-18, FR-19, FR-22, FR-23
+Related NFRs: NFR-01, NFR-03, NFR-08, NFR-10, NFR-12
+Related NIRs: NIR-07
+Page 43
+
+=== Page 46 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3.5.1
+Module Description
+This module handles the end of a parking session and the guidance updates
+associated with parking turnover. It verifies exit eligibility, records the end of the
+session, prepares the session for downstream billing, releases the occupied slot, and
+ensures that parking guidance information remains aligned with the latest session
+state. After a slot is released, the module updates the internal guidance data and
+refreshes electronic signage so that availability and directional information remain
+current for other drivers. When a session cannot be closed normally, such as when
+exit identification data is missing or inconsistent, a parking operator may intervene
+to manually resolve the abnormal session.
+Figure 5: MOD 4 – Guidance and Session Closure Use-case Diagram
+3.5.2
+Use-case Scenario: Complete Parking Session
+Field
+Description / Content
+Use Case ID
+UC_CO_01
+Use Case Name
+Complete Parking Session
+Created by
+Tran Duc Long
+Overview
+This use case describes how the system verifies a user’s
+exit request, closes the corresponding parking session,
+releases the occupied slot, updates parking guidance and
+electronic signage, and prepares downstream billing
+actions.
+Page 44
+
+=== Page 47 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Actor
+Primary: University Member / Visitor
+Secondary: Parking Operator, Electronic Signage
+Trigger
+The user or operator initiates a vehicle exit request.
+Pre-condition
+A corresponding active parking session exists or can be
+resolved by an operator.
+Post-condition
+Success: The session is completed, exit time is stored,
+the slot is released, and parking guidance and signage are
+updated to reflect the new availability.
+Failure: The exit remains unresolved and requires
+further action.
+Main Flow
+1. A vehicle requests exit from the parking area.
+2. The system identifies the active parking session associated with the request.
+3. The system verifies that the session is valid for closure.
+4. The system records the exit timestamp.
+5. The system computes the total parking duration.
+6. The system marks the parking session as completed.
+7. The system releases the related parking slot.
+8. The system updates parking guidance data to reflect the newly available
+capacity.
+9. The system refreshes connected electronic signage with the updated zone
+status.
+10. The system forwards the completed session to the billing-related process.
+Alternative Flow
+– AF-1: An operator resolves the session manually when the normal identifica-
+tion data is incomplete but sufficient supporting evidence exists.
+Page 45
+
+=== Page 48 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Exception Flow
+– EF-1: No active session matches the exit request. The system blocks auto-
+matic completion and requests operator review.
+– EF-2: Session data is inconsistent, such as a missing entry timestamp. The
+system marks the session as abnormal.
+– EF-3: The user attempts to exit in an invalid workflow state. The system
+denies completion and records the event.
+3.5.3
+Use-case Scenario: Update Parking Guidance
+Field
+Description / Content
+Use Case ID
+UC_CO_02
+Use Case Name
+Update Parking Guidance
+Created by
+Tran Duc Long
+Overview
+This use case describes how the system updates internal
+parking guidance data and refreshes electronic signage
+after a parking slot is released due to session closure. The
+system recalculates zone-level availability, determines the
+appropriate signage state (available, nearly full, or full),
+and pushes the updated status to connected electronic
+signage devices placed near entrances and key
+intersections.
+Actor
+Primary: System (triggered internally by session closure)
+Secondary: Electronic Signage
+Trigger
+A parking slot is released after a session is completed or
+resolved, causing a change in zone-level availability.
+Pre-condition
+The parking session has been successfully completed or
+resolved. The released slot is registered in an active
+parking zone. At least one electronic signage device is
+registered and connected.
+Page 46
+
+=== Page 49 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Post-condition
+Success: The zone-level availability is recalculated, the
+internal guidance data is updated, and electronic signage
+displays the most recent parking-zone status.
+Failure: Guidance data is not updated or signage is not
+refreshed; the issue is logged for operational monitoring.
+Main Flow
+1. The system detects that a parking slot has been released after session closure.
+2. The system recalculates the current availability of the affected parking zone.
+3. The system determines the updated zone status (available, nearly full, or
+full).
+4. The system updates the internal guidance data with the new zone availability.
+5. The system identifies the electronic signage devices associated with the af-
+fected zone.
+6. The system sends the updated zone status to the connected signage devices.
+7. The electronic signage displays the refreshed parking-zone status and direc-
+tional information.
+8. The system logs the guidance update event for operational monitoring.
+Alternative Flow
+– AF-1: Multiple slots are released within a short time window. The system
+batches the updates and sends a single consolidated refresh to the signage
+devices.
+– AF-2: The zone status has not changed after the slot release (e.g., the zone
+was already in the “available” state). The system skips the signage refresh to
+avoid unnecessary communication.
+Exception Flow
+Page 47
+
+=== Page 50 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-1: An electronic signage device is disconnected or unresponsive.
+The
+system skips the unreachable device, continues updating other devices, and
+logs the communication failure.
+– EF-2: Availability data is stale or inconsistent due to delayed sensor updates.
+The system uses the last confirmed state with a warning flag and logs the
+data quality issue.
+– EF-3: The guidance update process fails due to a system-level error. The
+system preserves the previous guidance state and schedules a retry.
+3.5.4
+Use-case Scenario: Resolve Abnormal Session
+Field
+Description / Content
+Use Case ID
+UC_CO_03
+Use Case Name
+Resolve Abnormal Session
+Created by
+Tran Duc Long
+Overview
+This use case describes how a parking operator manually
+intervenes to correct and close an abnormal parking
+session. An abnormal session may arise when exit
+identification data is incomplete, the entry record is
+inconsistent, the session has exceeded a configurable time
+threshold, or the automatic closure process has failed.
+The operator reviews the session details, applies
+corrections, and either completes or cancels the session
+with a recorded justification.
+Actor
+Primary: Parking Operator
+Trigger
+A parking session is flagged as abnormal by the system,
+or the operator receives an alert about an unresolved
+session that requires manual intervention.
+Pre-condition
+The parking operator is authenticated and has the
+necessary operational privilege. An abnormal or
+unresolved parking session exists in the system.
+Page 48
+
+=== Page 51 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Post-condition
+Success: The abnormal session is corrected, its status is
+updated to resolved or cancelled, and an audit record of
+the manual intervention is stored.
+Failure: The session remains in an abnormal state and is
+escalated or kept for further review.
+Main Flow
+1. The system flags a parking session as abnormal or the operator selects an
+unresolved session from the operational dashboard.
+2. The operator reviews the session details, including entry time, vehicle identi-
+fication data, assigned slot, and any available sensor or gate logs.
+3. The operator determines the appropriate corrective action (complete the ses-
+sion with adjusted data, or cancel the session).
+4. The operator enters the corrective information and provides a justification
+for the manual override.
+5. The system validates the corrective data for consistency.
+6. The system updates the session status to resolved or cancelled.
+7. The system writes an auditable record of the manual intervention, including
+the operator identity, timestamp, original session state, and applied changes.
+Alternative Flow
+– AF-1: The operator identifies that the session anomaly was caused by a sensor
+malfunction. The operator corrects the slot occupancy data and completes
+the session using gate-log evidence.
+– AF-2: The operator cannot resolve the session immediately and marks it for
+deferred review by a system administrator.
+Exception Flow
+– EF-1: The corrective data provided by the operator is inconsistent or incom-
+plete. The system rejects the update, highlights the invalid fields, and asks
+the operator to revise.
+Page 49
+
+=== Page 52 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-2: The operator does not have sufficient privilege to resolve the specific
+type of anomaly. The system blocks the action and escalates the session to a
+higher-level administrator.
+– EF-3: A system-level storage or connectivity issue prevents the update from
+being saved. The system preserves the original session state and notifies the
+operator to retry.
+3.6
+MOD 5 – Billing and Payment
+Mapped FRs: FR-24, FR-25, FR-26, FR-27
+Related NFRs: NFR-04, NFR-08, NFR-12
+Related NIRs: NIR-05, NIR-06
+3.6.1
+Module Description
+This module converts completed parking sessions into financial outcomes.
+It
+calculates parking fees based on duration and active pricing rules, supports both
+immediate payment and deferred billing models, sends payment-related requests to
+BKPay, and records the resulting financial state for auditing and later reporting.
+Figure 6: MOD 5 – Billing and Payment Use-case Diagram
+3.6.2
+Use-case Scenario: Calculate and Submit Parking Charge
+Page 50
+
+=== Page 53 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Field
+Description / Content
+Use Case ID
+UC_PAY_01
+Use Case Name
+Calculate and Submit Parking Charge
+Created by
+Member 5
+Overview
+This use case describes how the system determines the
+payable amount for a completed parking session and
+forwards payment-related information for settlement or
+billing.
+Actor
+Primary: System
+Secondary: BKPay
+Trigger
+A parking session has been completed and the system
+must determine the financial result.
+Pre-condition
+The session has valid entry and exit timestamps, and at
+least one applicable pricing policy exists.
+Post-condition
+Success: The fee amount is recorded and a billing or
+payment request is sent as needed.
+Failure: The session is flagged for financial review.
+Main Flow
+1. The system receives a completed parking session.
+2. The system identifies the user category and applicable pricing rules.
+3. The system calculates the parking duration to be charged.
+4. The system determines the final fee amount according to the active pricing
+policy.
+5. The system records the computed fee in the financial history.
+6. The system decides whether the session should be billed immediately or ac-
+cumulated into a billing cycle.
+7. The system sends the required payment or billing information to BKPay.
+8. The system updates the payment status according to the returned result or
+pending state.
+Page 51
+
+=== Page 54 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Alternative Flow
+– AF-1: The applicable privilege policy results in zero charge, and the system
+records the session as completed without payment collection.
+– AF-2: The user’s charge is deferred to the end of the billing period instead
+of being settled immediately.
+Exception Flow
+– EF-1: No valid pricing policy matches the session.
+The system flags the
+session for administrative review.
+– EF-2: BKPay does not return a usable response. The system keeps the session
+in a pending billing state and logs the synchronization issue.
+– EF-3: The session contains incomplete financial input data.
+The system
+rejects automatic billing and records an abnormal finance event.
+3.6.3
+Use-case Scenario: Record Monthly Parking Debt
+Field
+Description / Content
+Use Case ID
+UC_PAY_02
+Use Case Name
+Record Monthly Parking Debt
+Created by
+Member 5
+Overview
+This use case describes how the system identifies monthly
+subscribers and records their usage as a debt to be settled
+at the end of the billing cycle.
+Actor
+Primary: System Timer
+Trigger
+A parking session for a monthly subscriber is completed
+or a billing cycle reaches its cut-off time.
+Pre-condition
+The user must be identified as a "University Member"
+with an active monthly subscription.
+Page 52
+
+=== Page 55 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Post-condition
+Success: The debt record is updated in the user’s
+financial profile.
+Failure: The system fails to record debt; the session
+remains unbilled and is logged for manual audit.
+Main Flow
+1. The system detects a completed session by a monthly subscriber.
+2. The system calculates the fee (usually zero or a flat rate based on policy).
+3. The system updates the cumulative debt balance for the current billing month.
+4. The system logs the transaction detail in the user’s monthly statement.
+Alternative Flow
+– AF-1: The system detects that the user has a pre-paid subscription; the
+session is recorded for usage tracking without increasing the debt balance.
+Exception Flow
+– EF-1: The user’s monthly subscription has expired or is suspended.
+The
+system reroutes the session to the standard charging flow (UC_PAY_01).
+– EF-2: Database connection failure during debt update. The system stores a
+temporary transaction log and schedules a retry for the next synchronization
+cycle.
+3.6.4
+Use-case Scenario: Submit Billing Request to BKPay
+Field
+Description / Content
+Use Case ID
+UC_PAY_03
+Use Case Name
+Submit Billing Request to BKPay
+Created by
+Member 5
+Page 53
+
+=== Page 56 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Overview
+This use case handles the actual communication with the
+BKPay platform to initiate a financial transaction.
+Actor
+Primary: University Member / Visitor
+Secondary: BKPay
+Trigger
+The user selects "Pay Now" or the system triggers an
+automatic payment request.
+Pre-condition
+A valid fee has been calculated and a connection to
+NIR-05 (BKPay API) is available.
+Post-condition
+Success: A transaction ID is generated and the payment
+gateway is successfully invoked.
+Failure: An error message is displayed to the user; the
+transaction is logged as "Failed".
+Main Flow
+1. The system packages the transaction data (Amount, Session ID, User Info).
+2. The system calls the BKPay API via NIR-05.
+3. The system redirects the user to the BKPay payment interface (if applicable).
+4. The system receives an initial acknowledgement from BKPay.
+Alternative Flow
+– AF-1: The user cancels the transaction on the BKPay payment gateway
+interface. The system records the state as "Cancelled" and allows the user to
+re-initiate or change payment methods.
+Exception Flow
+– EF-1: The BKPay gateway is unreachable or returns a timeout error (NIR-
+05 failure). The system notifies the user and marks the session as "Pending
+Payment".
+– EF-2: Invalid transaction data (e.g., mismatched currency or amount). The
+system aborts the request and logs a technical error for administrative review.
+Page 54
+
+=== Page 57 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+3.6.5
+Use-case Scenario: Confirm Visitor Payment
+Field
+Description / Content
+Use Case ID
+UC_PAY_04
+Use Case Name
+Confirm Visitor Payment
+Created by
+Member 5
+Overview
+This use case allows an operator to manually verify and
+confirm a payment made by a visitor (e.g., cash payment
+at the gate).
+Actor
+Primary: Parking Operator
+Trigger
+A visitor chooses to pay by cash or an exception occurs
+with the automated system at the exit.
+Pre-condition
+The operator is logged in and the visitor’s session is
+active at the exit gate.
+Post-condition
+Success: The session is marked as "Paid" and the exit
+barrier is permitted to open.
+Failure: The payment is not confirmed; the vehicle
+remains at the gate.
+Main Flow
+1. The Parking Operator views the calculated fee on the terminal.
+2. The Visitor provides payment to the Operator.
+3. The Operator confirms receipt of payment in the system.
+4. The system updates the session status to "Paid".
+Alternative Flow
+– AF-1: The visitor provides a physical discount voucher. The operator man-
+ually enters the discount code, and the system recalculates the net amount
+before confirmation.
+Exception Flow
+Page 55
+
+=== Page 58 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-1: The amount entered by the operator is less than the required fee. The
+system blocks the "Paid" confirmation until the full amount is satisfied.
+– EF-2: Network loss between the operator terminal and the central server.
+The operator must record the payment manually and synchronize it once the
+connection is restored.
+3.6.6
+Use-case Scenario: Synchronize Payment Status
+Field
+Description / Content
+Use Case ID
+UC_PAY_05
+Use Case Name
+Synchronize Payment Status
+Created by
+Member 5
+Overview
+This use case ensures that the internal parking system’s
+payment records match the actual transaction status from
+the BKPay platform.
+Actor
+Primary: System Administrator
+Secondary: BKPay
+Trigger
+Periodic synchronization task or manual request by the
+Administrator.
+Pre-condition
+There are pending or unconfirmed transactions in the
+local database.
+Post-condition
+Success: All local transaction statuses are updated to
+match BKPay records.
+Failure: Discrepancies are flagged for manual
+reconciliation.
+Main Flow
+1. The system/Administrator initiates the synchronization process.
+2. The system queries BKPay (via NIR-06) for the status of pending transaction
+IDs.
+3. The system compares BKPay’s response with local records.
+Page 56
+
+=== Page 59 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4. The system updates local statuses (e.g., from "Pending" to "Success" or
+"Cancelled").
+5. The system generates a synchronization log.
+Alternative Flow
+– AF-1: The synchronization process finds a transaction successful on BKPay
+but failed locally. The system automatically updates the internal status to
+"Paid" to match the gateway.
+Exception Flow
+– EF-1: Critical data mismatch (e.g., different amounts for the same ID). The
+system freezes the record and alerts the System Administrator for manual
+reconciliation.
+– EF-2: Integration failure with the BKPay reconciliation API (NIR-06). The
+system halts the sync process and sends an automated alert to the IT Infras-
+tructure Unit.
+3.7
+MOD 6 – Administration, Policy and Audit
+Mapped FRs: FR-28, FR-29, FR-30
+Related NFRs: NFR-06, NFR-08, NFR-09, NFR-11
+Related NIRs: NIR-06, NIR-08
+3.7.1
+Module Description
+This module supports governance, policy control, and audit visibility across the
+smart parking system. It allows administrators to configure pricing and privilege
+policies, review and filter historical activity logs, inspect operational events, and
+export audit records for compliance purposes. Because the platform interacts with
+authentication, finance, and IoT infrastructure, this module is essential for maintain-
+ing controllability, traceability, and long-term adaptability. All policy modifications
+are validated for consistency before activation and recorded as versioned config-
+uration items so that the system preserves a complete and immutable history of
+Page 57
+
+=== Page 60 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+operational changes, including pricing updates, privilege adjustments, and manual
+overrides performed by operators.
+Figure 7: MOD 6 – Administration, Policy and Audit Use-case Diagram
+3.7.2
+Use-case Scenario: Configure Parking Policy
+Field
+Description / Content
+Use Case ID
+UC_ADMIN_01
+Use Case Name
+Configure Parking Policy
+Created by
+Tran Duc Long
+Overview
+This use case describes how an administrator defines or
+updates parking-related business rules, including privilege
+rules and pricing policies.
+Actor
+Primary: System Administrator
+Trigger
+The administrator decides to create, update, or replace a
+parking policy.
+Pre-condition
+The administrator is authenticated and has the necessary
+configuration privilege.
+Page 58
+
+=== Page 61 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Post-condition
+Success: The new policy is stored, versioned, and
+activated according to administrative intent.
+Failure: The existing active policy remains unchanged.
+Main Flow
+1. The administrator opens the policy management interface.
+2. The system displays the currently active parking policies and their scope.
+3. The administrator selects a policy to edit or creates a new policy.
+4. The administrator enters or updates parking privileges, fee rules, and effective
+conditions.
+5. The system performs Validate Policy Rules to check the consistency and
+completeness of the submitted policy data.
+6. The system stores the policy as a managed configuration item.
+7. The system activates the new policy or schedules it for activation according
+to the administrator’s choice.
+8. The system performs Record Policy Change to write an auditable record of
+the policy modification.
+Alternative Flow
+– AF-1: The administrator saves the new policy as a draft for later review
+instead of activating it immediately.
+– AF-2: The administrator clones an existing policy as a starting template for
+a new academic period.
+Exception Flow
+– EF-1: The policy contains conflicting or incomplete rules. The system rejects
+activation and highlights the invalid fields.
+– EF-2: The administrator does not have sufficient permission to modify policy.
+The system blocks the action and logs the attempt.
+Page 59
+
+=== Page 62 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+– EF-3: The policy cannot be saved due to a system-level storage problem. The
+system preserves the previous active version and reports the failure.
+3.7.3
+Use-case Scenario: Review Activity Logs
+Field
+Description / Content
+Use Case ID
+UC_ADMIN_02
+Use Case Name
+Review Activity Logs
+Created by
+Tran Duc Long
+Overview
+This use case describes how an administrator reviews logs
+of parking activities, access events, and financial
+transactions recorded by the system. The administrator
+can search, filter, and inspect log entries to monitor
+operational behavior, investigate incidents, and support
+compliance or audit-related inquiries.
+Actor
+Primary: System Administrator
+Trigger
+The administrator opens the activity log review interface
+to inspect recorded system events, or the administrator
+receives an alert that requires log-based investigation.
+Pre-condition
+The administrator is authenticated and has the necessary
+administrative privilege. The system has recorded
+operational log entries from parking sessions, access
+decisions, financial events, or device interactions.
+Post-condition
+Success: The requested log entries are displayed, and the
+administrator can inspect, filter, or export the results for
+further analysis.
+Failure: Log data is unavailable or the query returns no
+matching entries; the administrator is informed of the
+issue.
+Main Flow
+1. The administrator opens the activity log review interface.
+2. The system displays an overview of recent log entries grouped by category
+Page 60
+
+=== Page 63 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+(parking sessions, access events, financial transactions, device events).
+3. The administrator performs Filter Log Entries by specifying filter criteria
+such as date range, event type, user identity, or session identifier.
+4. The system retrieves and displays the matching log entries.
+5. The administrator selects a specific log entry to inspect its full details.
+6. The system presents the complete event record, including timestamp, actor,
+action, affected entity, and outcome.
+Alternative Flow
+– AF-1: The administrator exports the filtered log results to an external file
+format (e.g., CSV or PDF) for offline review or reporting purposes.
+– AF-2: The administrator applies a saved filter preset to quickly access a fre-
+quently used log view, such as daily access failures or weekly billing anomalies.
+Exception Flow
+– EF-1: The query returns no matching entries. The system displays an infor-
+mational message and suggests broadening the filter criteria.
+– EF-2: The log storage service is temporarily unavailable. The system displays
+a service error message and logs the incident for infrastructure monitoring.
+3.7.4
+Use-case Scenario: View Audit Trail
+Field
+Description / Content
+Use Case ID
+UC_ADMIN_03
+Use Case Name
+View Audit Trail
+Created by
+Tran Duc Long
+Page 61
+
+=== Page 64 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Overview
+This use case describes how an administrator views the
+immutable audit trail of important operational changes
+within the smart parking system. The audit trail includes
+records of policy updates, manual session overrides,
+privilege modifications, and configuration changes. Each
+audit entry preserves the identity of the actor, the
+timestamp, the previous state, and the new state to
+ensure full traceability.
+Actor
+Primary: System Administrator
+Trigger
+The administrator accesses the audit trail interface to
+review the history of operational changes, or an external
+compliance inquiry requires inspection of historical
+records.
+Pre-condition
+The administrator is authenticated and has the necessary
+administrative privilege. The system has recorded at least
+one auditable operational change.
+Post-condition
+Success: The audit trail is displayed with full
+traceability, showing the actor, timestamp, previous state,
+and new state for each audited change.
+Failure: Audit records are inaccessible; the administrator
+is informed and the access attempt is itself logged.
+Main Flow
+1. The administrator opens the audit trail interface.
+2. The system displays the most recent audit entries in reverse chronological
+order.
+3. The administrator applies filters such as date range, change type (policy
+update, manual override, privilege change), or responsible actor.
+4. The system retrieves and displays the matching audit records.
+5. The administrator selects an audit entry to view its complete details, includ-
+ing the previous configuration state and the new state after the change.
+Page 62

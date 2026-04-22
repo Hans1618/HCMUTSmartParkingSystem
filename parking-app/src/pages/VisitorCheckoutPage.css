@@ -1,0 +1,81 @@
+.visitor-checkout-header {
+  padding-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.visitor-checkout-empty {
+  padding-top: var(--space-3xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.visitor-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.visitor-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.visitor-summary-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+.visitor-fee {
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.visitor-fee-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.visitor-fee-cap {
+  color: var(--secondary);
+  background: var(--secondary-container);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.visitor-fee-divider {
+  height: 1px;
+  background: var(--outline-variant);
+  margin: var(--space-sm) 0;
+}
+
+.visitor-fee-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-md);
+}
+
+.visitor-fee-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.visitor-fee-total-amount {
+  color: var(--primary);
+  font-size: 2rem;
+}

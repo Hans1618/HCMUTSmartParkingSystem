@@ -1,0 +1,47 @@
+.session-timer {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xl) 0;
+}
+
+.timer-ring {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.timer-ring-progress {
+  transition: stroke-dashoffset 1s linear;
+}
+
+.timer-display {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  z-index: 1;
+}
+
+.timer-digits {
+  font-size: 2.25rem;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.02em;
+}
+
+.timer-seconds {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+}

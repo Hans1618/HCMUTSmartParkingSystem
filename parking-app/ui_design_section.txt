@@ -1,0 +1,603 @@
+
+=== Page 63 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+(parking sessions, access events, financial transactions, device events).
+3. The administrator performs Filter Log Entries by specifying filter criteria
+such as date range, event type, user identity, or session identifier.
+4. The system retrieves and displays the matching log entries.
+5. The administrator selects a specific log entry to inspect its full details.
+6. The system presents the complete event record, including timestamp, actor,
+action, affected entity, and outcome.
+Alternative Flow
+– AF-1: The administrator exports the filtered log results to an external file
+format (e.g., CSV or PDF) for offline review or reporting purposes.
+– AF-2: The administrator applies a saved filter preset to quickly access a fre-
+quently used log view, such as daily access failures or weekly billing anomalies.
+Exception Flow
+– EF-1: The query returns no matching entries. The system displays an infor-
+mational message and suggests broadening the filter criteria.
+– EF-2: The log storage service is temporarily unavailable. The system displays
+a service error message and logs the incident for infrastructure monitoring.
+3.7.4
+Use-case Scenario: View Audit Trail
+Field
+Description / Content
+Use Case ID
+UC_ADMIN_03
+Use Case Name
+View Audit Trail
+Created by
+Tran Duc Long
+Page 61
+
+=== Page 64 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+Overview
+This use case describes how an administrator views the
+immutable audit trail of important operational changes
+within the smart parking system. The audit trail includes
+records of policy updates, manual session overrides,
+privilege modifications, and configuration changes. Each
+audit entry preserves the identity of the actor, the
+timestamp, the previous state, and the new state to
+ensure full traceability.
+Actor
+Primary: System Administrator
+Trigger
+The administrator accesses the audit trail interface to
+review the history of operational changes, or an external
+compliance inquiry requires inspection of historical
+records.
+Pre-condition
+The administrator is authenticated and has the necessary
+administrative privilege. The system has recorded at least
+one auditable operational change.
+Post-condition
+Success: The audit trail is displayed with full
+traceability, showing the actor, timestamp, previous state,
+and new state for each audited change.
+Failure: Audit records are inaccessible; the administrator
+is informed and the access attempt is itself logged.
+Main Flow
+1. The administrator opens the audit trail interface.
+2. The system displays the most recent audit entries in reverse chronological
+order.
+3. The administrator applies filters such as date range, change type (policy
+update, manual override, privilege change), or responsible actor.
+4. The system retrieves and displays the matching audit records.
+5. The administrator selects an audit entry to view its complete details, includ-
+ing the previous configuration state and the new state after the change.
+Page 62
+
+=== Page 65 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+6. The system presents the full audit record with actor identity, timestamp,
+change description, justification (if provided), and before/after comparison.
+Alternative Flow
+– AF-1: The administrator performs Export Audit Report to export the filtered
+audit trail to a compliance-ready format (e.g., signed PDF) for submission to
+an external auditor or university governance body.
+– AF-2: The administrator compares two audit entries side by side to under-
+stand the progression of a specific policy across multiple revision cycles.
+Exception Flow
+– EF-1: The audit trail storage is temporarily unavailable. The system displays
+a service error message, prevents the interface from showing incomplete data,
+and logs the incident.
+– EF-2: The administrator attempts to access audit records beyond their au-
+thorized scope. The system blocks the request and records the unauthorized
+access attempt in the audit trail itself.
+4
+UI Design
+4.1
+Design Rationale and User-flow Logic
+The UI design is organized around the main operational problems identified in
+the campus parking context: congestion at entry and exit points, limited real-time
+visibility of parking availability, difficulty handling visitors or exceptional no-card
+cases, fragmented billing procedures, and the need for operator/admin supervision.
+To address these issues, the interface is structured into six solution-oriented modules:
+Authentication and User Access, Check-in & Temporary Entry, Slot Monitoring and
+Availability, Guidance and Session Closure, Billing and Payment, and Administra-
+tion, Policy and Audit.
+This structure is intended to reduce cognitive load for each user group by present-
+ing only the decisions relevant to their role and current task. University members are
+guided through authenticated access and parking usage, visitors are guided through
+Page 63
+
+=== Page 66 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+temporary entry and payment, while operators and administrators are supported
+through monitoring, exception handling, logging, and policy control. In this way,
+the UI is not designed merely as a set of screens, but as an interface layer that
+operationalizes the project’s core requirements and constraints.
+4.2
+Overview of Screen Flow
+University Member Flow: Login →Dashboard →Parking Availability →
+Check-in →Active Session →Check-out →Billing / Status
+Visitor / Temporary User Flow: Temporary Entry →Temporary Ticket →
+Assigned Zone →Check-out →Payment
+Administrator / Operator Flow: Login →Policy Management →Pricing /
+Privilege Configuration →Logs / Audit / Alerts
+University Member Flow. This flow supports authenticated campus users who
+access parking through institutional identity. It begins with HCMUT_SSO-based
+authentication, continues with visibility of current parking availability, then supports
+check-in, active parking-session tracking, and check-out. The final billing/status
+step reflects the requirement that some user groups may be charged according to
+role-based or billing-period policies rather than only immediate payment.
+Visitor / Temporary User Flow. This flow is designed for short-term users
+or exceptional no-card cases where centralized institutional authentication is not
+available. It prioritizes quick entry through temporary ticket issuance, then pro-
+vides zone assignment and session closure, followed by payment confirmation. This
+directly addresses the requirement for temporary access independent of centralized
+authentication.
+Administrator / Operator Flow. This flow supports monitoring and governance
+tasks rather than ordinary parking usage. Instead of focusing on entry, it focuses on
+configuration, operational correction, logs, audit records, and alerts. This reflects
+the requirement that the system must support different operational responsibilities,
+including system administrators and parking operators.
+Page 64
+
+=== Page 67 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.3
+MOD 1 – Authentication and User Access
+This UI module is designed to control access before any protected parking action
+is performed. It reduces invalid access attempts by making authentication, autho-
+rization, and access-result feedback explicit from the beginning of the user journey.
+4.3.1
+Login Screen
+Insert MOD 1 Login Screen here
+Figure 8: MOD 1 – Login Screen
+This screen is the controlled entry point for institutional users who need to access
+protected parking functions. It guides the university member to start authentication
+through HCMUT_SSO before performing any check-in, availability query, or billing-
+related action that requires identity verification. By forcing authentication first, the
+screen supports role-based access control, reduces invalid access attempts, and aligns
+the interface with the requirement that protected parking functions must only be
+available to authorized institutional users.
+Purpose: Start authenticated access for institutional users.
+Primary user: University Member.
+Main action: Sign in through HCMUT_SSO.
+Pain point addressed: Prevent unauthorized access and clarify the first step for
+protected parking actions.
+Related use cases: Authenticate User for Parking Access, Retrieve User Profile
+from HCMUT_DATACORE, Check Parking Privilege.
+Page 65
+
+=== Page 68 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.3.2
+Authentication Result / Error Screen
+Insert MOD 1 Authentication Result / Error Screen here
+Figure 9: MOD 1 – Authentication Result / Error Screen
+This screen communicates the outcome of authentication and authorization in a
+clear and actionable way. Instead of leaving the user uncertain after login, it explic-
+itly shows whether access is granted, denied, restricted, or temporarily unavailable
+due to dependency issues such as SSO or profile-service failure. This screen there-
+fore addresses both usability and operational transparency by helping first-time users
+understand what happened and what they should do next.
+Purpose: Show the result of authentication and privilege evaluation.
+Primary user: University Member.
+Main action: Continue, retry, or stop based on the access result.
+Pain point addressed: Reduce confusion after login and make access decisions
+understandable.
+Related use cases: Authenticate User for Parking Access, Check Parking Privilege,
+Log Access Decision.
+The UI screens in this module are further operationalized in the corresponding
+sequence and activity diagrams in Sections 5.1 and 6.1.
+4.4
+MOD 2 – Check-in & Temporary Entry
+This UI module is designed to reduce friction at the parking entrance by separat-
+ing normal institutional entry from temporary-entry handling. It ensures that entry
+decisions are made clearly and quickly while still preserving session consistency and
+traceability.
+Page 66
+
+=== Page 69 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.4.1
+Check-in Screen
+Insert MOD 2 Check-in Screen here
+Figure 10: MOD 2 – Check-in Screen
+This screen supports the moment when a vehicle arrives at the parking entrance
+and a new session must begin. Its purpose is not only to collect entry information,
+but also to structure the check-in decision so the system can validate the request
+before opening access. By guiding the user through the start of a parking session,
+the screen helps reduce confusion at the gate and supports smoother entry handling
+under potentially high traffic conditions.
+Purpose: Begin a valid parking-entry request.
+Primary user: University Member / Visitor / Temporary User.
+Main action: Start check-in and submit entry data.
+Pain point addressed: Reduce entry-side confusion and support faster gate pro-
+cessing.
+Related use cases: Start Parking Session, Validate Entry Request.
+Page 67
+
+=== Page 70 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.4.2
+Temporary Ticket Screen
+Insert MOD 2 Temporary Ticket Screen here
+Figure 11: MOD 2 – Temporary Ticket Screen
+This screen is specifically designed for visitors and exceptional no-card cases
+where the normal institutional authentication flow cannot be used. It supports the
+issuance of a temporary identifier so that parking access can still be managed in a
+controlled and traceable manner. This directly addresses one of the central project
+requirements: the system must remain usable even when centralized authentication
+is not available for the current user.
+Purpose: Support temporary-entry handling when institutional identity is unavail-
+able.
+Primary user: Visitor / Temporary User, Parking Operator.
+Main action: Generate and confirm a temporary ticket.
+Pain point addressed: Handle visitor and no-card cases without breaking entry
+flow.
+Related use cases: Issue Temporary Ticket, Start Parking Session.
+Page 68
+
+=== Page 71 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.4.3
+Entry Confirmation / Denial Screen
+Insert MOD 2 Entry Result Screen here
+Figure 12: MOD 2 – Entry Confirmation / Denial Screen
+This screen closes the entry decision clearly by showing whether the parking ses-
+sion was created successfully or whether access was denied. It is important because
+the gate context requires immediate, unambiguous feedback: the user must know
+whether to proceed, wait, or seek operator assistance. The screen therefore turns
+validation results into an operationally clear outcome, especially in situations such
+as invalid requests or full-capacity denial.
+Purpose: Confirm the final outcome of the entry decision.
+Primary user: University Member / Visitor / Temporary User.
+Main action: Proceed, retry, or seek operator support.
+Pain point addressed: Prevent ambiguity at the gate and make denial reasons
+understandable.
+Related use cases: Validate Entry Request, Assign Parking Slot / Zone, Deny
+Entry When Parking Is Full.
+The UI screens in this module are further operationalized in the corresponding
+sequence and activity diagrams in Sections 5.2 and 6.2.
+4.5
+MOD 3 – Slot Monitoring and Availability
+This UI module translates raw IoT parking data into a decision-oriented avail-
+ability view. Its main value is to reduce poor space utilization and unnecessary
+circulation by helping users understand where capacity still exists and what parking
+states are currently reliable.
+Page 69
+
+=== Page 72 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.5.1
+Parking Availability Dashboard
+Insert MOD 3 Availability Dashboard here
+Figure 13: MOD 3 – Parking Availability Dashboard
+This screen provides a current, decision-oriented view of parking capacity so that
+users do not need to guess where space may still be available. Its value is not merely
+informational; it helps reduce unnecessary circulation and supports faster parking
+decisions by turning live slot/zone data into a simple operational overview. This
+screen is therefore central to solving the project’s visibility problem.
+Purpose: Present current parking availability in a simple and useful way.
+Primary user: University Member, Visitor, Parking Operator.
+Main action: View current slot or zone status before entry or redirection.
+Pain point addressed: Lack of real-time visibility and underutilization of parking
+areas.
+Related use cases: Update Parking Availability, View Parking Availability.
+Page 70
+
+=== Page 73 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.5.2
+Parking Map / Zone View
+Insert MOD 3 Parking Map / Zone View here
+Figure 14: MOD 3 – Parking Map / Zone View
+This screen translates raw availability data into a spatial view that drivers and
+operators can understand quickly. Instead of showing only numbers, it visualizes
+zones and their occupancy state so that users can move toward suitable parking areas
+more efficiently. By doing so, the screen supports the project’s guidance objective
+and improves local decision-making inside the campus.
+Purpose: Visualize availability in a spatially meaningful format.
+Primary user: University Member, Visitor, Parking Operator.
+Main action: Identify suitable parking zones quickly.
+Pain point addressed: Reduce wandering inside campus and improve parking
+guidance.
+Related use cases: View Parking Availability, Update Parking Guidance.
+Page 71
+
+=== Page 74 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.5.3
+Unknown / Full Zone State View
+Insert MOD 3 Unknown / Full Zone State View here
+Figure 15: MOD 3 – Unknown / Full Zone State View
+This screen demonstrates how the system behaves when availability information
+is degraded or when a zone reaches its capacity limit. Showing “unknown” and “full”
+explicitly is important because the project requires resilience to delayed, inconsis-
+tent, or missing device data rather than pretending that all parking data is always
+reliable. This screen therefore supports both transparency and trust in the system’s
+operational state.
+Purpose: Represent abnormal, degraded, or capacity-limit states clearly.
+Primary user: University Member, Visitor, Parking Operator.
+Main action: Understand whether a zone is unavailable because it is full or because
+data is unreliable.
+Pain point addressed: Prevent misleading parking decisions under imperfect IoT
+conditions.
+Related use cases: Mark Slot Status as Unknown, Detect Full-Zone Condition,
+View Parking Availability.
+The UI screens in this module are further operationalized in the corresponding
+sequence and activity diagrams in Sections 5.3 and 6.3.
+4.6
+MOD 4 – Guidance and Session Closure
+This UI module covers the transition from active parking usage to session com-
+pletion. It ensures that exit handling, released capacity, refreshed guidance, and
+abnormal-session recovery are all represented clearly in the interface.
+Page 72
+
+=== Page 75 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.6.1
+Check-out / Exit Screen
+Insert MOD 4 Check-out Screen here
+Figure 16: MOD 4 – Check-out / Exit Screen
+This screen supports the controlled closure of a parking session when the user
+leaves the campus. It ensures that exit time and session completion are captured
+correctly before downstream actions such as charge calculation or slot release occur.
+In this way, the screen is a critical transition point between parking usage and
+billing/session finalization.
+Purpose: Close an active parking session correctly.
+Primary user: University Member / Visitor / Parking Operator.
+Main action: Initiate exit and confirm session closure.
+Pain point addressed: Ensure exit processing is consistent and traceable.
+Related use cases: Complete Parking Session.
+Page 73
+
+=== Page 76 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.6.2
+Guidance Update Screen
+Insert MOD 4 Guidance Update Screen here
+Figure 17: MOD 4 – Guidance Update Screen
+This screen reflects the dynamic side of the parking system after a session ends
+or parking conditions change. Its purpose is to refresh guidance information so that
+the release of one slot or the status of one zone can immediately influence how later
+users are directed.
+This helps the system reduce inefficient movement and sup-
+ports the project’s requirement for dynamic guidance through updated availability
+information.
+Purpose: Present refreshed zone guidance after session closure or state change.
+Primary user: University Member, Visitor, Parking Operator.
+Main action: View updated direction and availability information.
+Pain point addressed: Keep parking guidance aligned with the newest available
+capacity.
+Related use cases: Update Parking Guidance, Update Parking Availability.
+Page 74
+
+=== Page 77 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.6.3
+Abnormal Session Resolution Screen
+Insert MOD 4 Abnormal Session Resolution Screen here
+Figure 18: MOD 4 – Abnormal Session Resolution Screen
+This screen is designed for operational recovery rather than normal user flow. It
+allows a parking operator to inspect and correct sessions that cannot be closed nor-
+mally, such as cases involving inconsistent entry/exit data or exceptional handling.
+Its inclusion shows that the system is designed not only for happy-path usage but
+also for traceable intervention under real-world operational problems.
+Purpose: Support manual correction of unresolved or abnormal sessions.
+Primary user: Parking Operator.
+Main action: Review, correct, and resolve an abnormal session.
+Pain point addressed: Prevent operational dead-ends when automatic session
+closure fails.
+Related use cases: Resolve Abnormal Session, Review Activity Logs, View Audit
+Trail.
+The UI screens in this module are further operationalized in the corresponding
+sequence and activity diagrams in Sections 5.4 and 6.4.
+4.7
+MOD 5 – Billing and Payment
+This UI module translates completed parking sessions into understandable and
+traceable financial actions.
+It is designed to reduce fragmented fee handling by
+showing how fee calculation, settlement, visitor payment, and payment-status syn-
+chronization are connected.
+Page 75
+
+=== Page 78 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.7.1
+Billing Summary Screen
+Insert MOD 5 Billing Summary Screen here
+Figure 19: MOD 5 – Billing Summary Screen
+This screen presents the financial result of a completed session in a form the
+user can review before payment or settlement. It is important because the project
+explicitly addresses fragmented parking fee management and requires fees to be
+calculated according to role-based policy and billing logic. The screen therefore acts
+as the bridge between session closure and financial processing.
+Purpose: Summarize computed charges before settlement.
+Primary user: University Member / Visitor / Parking Operator.
+Main action: Review the charge breakdown and proceed to payment or settlement.
+Pain point addressed: Make fee calculation transparent and understandable.
+Related use cases: Calculate and Submit Parking Charge, Record Monthly Park-
+ing Debt.
+Page 76
+
+=== Page 79 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.7.2
+Payment Screen / BKPay Redirect
+Insert MOD 5 BKPay Redirect Screen here
+Figure 20: MOD 5 – Payment Screen / BKPay Redirect
+This screen supports fee settlement through BKPay, which is the designated uni-
+versity payment platform in the project description. Rather than treating payment
+as a detached step, the screen shows how the parking system hands over financial
+processing to the institutional payment ecosystem. This strengthens the realism of
+the solution and demonstrates how billing is integrated into the broader university
+infrastructure.
+Purpose: Connect parking billing to the institutional payment platform.
+Primary user: University Member / Visitor.
+Main action: Continue payment processing through BKPay.
+Pain point addressed: Avoid fragmented fee collection and show a realistic set-
+tlement path.
+Related use cases: Submit Billing Request to BKPay, Confirm Visitor Payment.
+Page 77
+
+=== Page 80 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.7.3
+Visitor Payment Confirmation Screen
+Insert MOD 5 Visitor Payment Confirmation Screen here
+Figure 21: MOD 5 – Visitor Payment Confirmation Screen
+This screen confirms whether a temporary user’s payment has been accepted
+and whether the parking session can be closed without outstanding obligations. It is
+especially important for visitor flow because temporary access must remain traceable
+and self-contained even without institutional identity. The screen therefore converts
+payment status into a clear operational outcome for exit.
+Purpose: Confirm settlement for temporary-entry users.
+Primary user: Visitor / Parking Operator.
+Main action: Review and confirm visitor-payment completion.
+Pain point addressed:
+Keep temporary-entry payment traceable and opera-
+tionally clear.
+Related use cases: Confirm Visitor Payment, Synchronize Payment Status.
+Page 78
+
+=== Page 81 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.7.4
+Payment Status / Synchronization Result Screen
+Insert MOD 5 Payment Status Screen here
+Figure 22: MOD 5 – Payment Status / Synchronization Result Screen
+This screen communicates the final state of payment synchronization after the
+parking system receives a response from BKPay. Its role is to make financial pro-
+cessing transparent by distinguishing between completed, pending, failed, or delayed
+synchronization states. This is particularly valuable in a real-world environment
+where external integrations may respond slowly or temporarily fail.
+Purpose: Communicate the result of billing and payment synchronization.
+Primary user: University Member / Visitor / Parking Operator / Administrator.
+Main action: Check whether payment is complete, pending, or failed.
+Pain point addressed: Reduce uncertainty caused by delayed external payment
+responses.
+Related use cases: Submit Billing Request to BKPay, Synchronize Payment Sta-
+tus.
+The UI screens in this module are further operationalized in the corresponding
+sequence and activity diagrams in Sections 5.5 and 6.5.
+4.8
+MOD 6 – Administration, Policy and Audit
+This UI module supports governance, supervision, and accountability. It is not
+focused on ordinary parking usage, but on making pricing policy, operational logs,
+and audit records observable and manageable for staff roles.
+Page 79
+
+=== Page 82 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.8.1
+Policy Management Screen
+Insert MOD 6 Policy Management Screen here
+Figure 23: MOD 6 – Policy Management Screen
+This screen supports administrative control over pricing rules, privilege poli-
+cies, and operational configuration. It exists because the project requires parking
+privileges and pricing to remain configurable for different user groups rather than
+hard-coded. By exposing policy changes through a controlled interface, the system
+supports governance and adaptability.
+Purpose: Configure parking policy, pricing rules, and privilege logic.
+Primary user: System Administrator.
+Main action: Create, edit, validate, and activate policies.
+Pain point addressed: Support changing institutional rules without redesigning
+the system.
+Related use cases: Configure Parking Policy.
+Page 80
+
+=== Page 83 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.8.2
+Activity Logs Screen
+Insert MOD 6 Activity Logs Screen here
+Figure 24: MOD 6 – Activity Logs Screen
+This screen helps administrators and operators review operational events such as
+access decisions, abnormal sessions, and financial processing outcomes. Its purpose
+is not only observation, but traceable supervision: it allows staff to understand what
+happened, when it happened, and whether intervention is needed.
+Purpose: Review system activity for supervision and incident investigation.
+Primary user: System Administrator / Parking Operator.
+Main action: Search, filter, and inspect activity logs.
+Pain point addressed: Improve operational visibility and support issue investi-
+gation.
+Related use cases: Review Activity Logs.
+Page 81
+
+=== Page 84 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+4.8.3
+Audit Trail Screen
+Insert MOD 6 Audit Trail Screen here
+Figure 25: MOD 6 – Audit Trail Screen
+This screen presents immutable records of important system changes, including
+policy updates, manual overrides, and other governance-relevant events. It demon-
+strates that the solution supports long-term accountability and not only daily usage.
+This is especially important because the project explicitly requires traceability for
+parking operations and financial records.
+Purpose: Present immutable records of important operational changes.
+Primary user: System Administrator.
+Main action: Inspect, filter, and review audit entries in detail.
+Pain point addressed: Ensure accountability, traceability, and compliance readi-
+ness.
+Related use cases: View Audit Trail.
+The UI screens in this module are further operationalized in the corresponding
+sequence and activity diagrams in Sections 5.6 and 6.6.
+4.9
+UI Coverage of Exception Paths
+In addition to normal user flows, the UI design also includes exception-oriented
+screens for denied entry, unavailable services, unknown slot states, abnormal ses-
+sion handling, and payment synchronization issues. These exception screens are
+necessary because the project operates under realistic constraints, including depen-
+dency on external services, imperfect IoT data, and heterogeneous access conditions.
+Therefore, the UI section is intended to cover not only happy-path interaction, but
+Page 82
+
+=== Page 85 ===
+Ho Chi Minh City University of Technology
+Faculty of Computer Science and Engineering
+also the most important operational failure and recovery situations that may occur
+in campus parking practice.
+5
+Sequence Diagram
+This section presents the runtime interaction view of the Smart Parking System.
+While the use-case section defines what the system must do, the sequence diagrams
+explain how users, internal services, external platforms, and operational components
+collaborate to realize those responsibilities at execution time. The descriptions in
+this section intentionally cover both normal and exception-oriented behavior because
+the project is expected to operate under realistic constraints such as invalid requests,
+unavailable external services, delayed or inconsistent IoT data, abnormal parking
+sessions, and payment synchronization issues.
+5.1
+MOD 1 – Authentication and User Access
+5.1.1
+Sequence Diagram Overview
+For MOD 1, the sequence design is divided into two connected diagrams in order
+to keep the interaction logic detailed but not fragmented. The first sequence diagram
+focuses on the overall authentication flow, including user access request, communi-
+cation with HCMUT_SSO, profile retrieval from HCMUT_DATACORE, and the
+final access result returned to the user. The second sequence diagram focuses on
+parking privilege evaluation, where the system checks the user’s institutional profile
+against the currently active parking policy and determines whether the user should
+receive full access, limited access, or denied access. Together, these two diagrams
+show that protected parking access depends not only on identity verification but
+also on policy-driven authorization and service reliability.
+Page 83
