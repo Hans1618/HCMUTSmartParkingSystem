@@ -32,6 +32,14 @@ export default function AdminDashboardPage() {
 
   const tiles = [
     {
+      id: "revenue",
+      path: "/admin/revenue",
+      icon: TrendingUp,
+      label: "Revenue analytics",
+      desc: `${formatVND(revenueToday)} today · trends & breakdown`,
+      tone: "secondary",
+    },
+    {
       id: "policies",
       path: "/admin/policies",
       icon: FileText,
@@ -89,13 +97,17 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="admin-stat card">
+        <div
+          className="admin-stat card card-interactive"
+          onClick={() => navigate("/admin/revenue")}
+          id="admin-stat-revenue"
+        >
           <div className="admin-stat-icon admin-tone-secondary">
             <TrendingUp size={20} />
           </div>
           <div>
             <span className="headline-sm">{formatVND(revenueToday)}</span>
-            <span className="label-md">Estimated revenue today</span>
+            <span className="label-md">Estimated revenue today · view details</span>
           </div>
         </div>
 

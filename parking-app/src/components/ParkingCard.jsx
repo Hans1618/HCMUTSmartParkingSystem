@@ -1,5 +1,5 @@
 import StatusChip from "./StatusChip";
-import { getZoneStatus } from "../data/mockData";
+import { getZoneStatus, formatRate } from "../data/mockData";
 import { MapPin, Clock, ChevronRight } from "lucide-react";
 import "./ParkingCard.css";
 
@@ -56,9 +56,7 @@ export default function ParkingCard({ zone, onClick }) {
           </div>
           <div className="parking-card-meta-item">
             <MapPin size={14} />
-            <span className="label-md">
-              {new Intl.NumberFormat("vi-VN").format(zone.rate)}₫/hr
-            </span>
+            <span className="label-md">{formatRate(zone)}</span>
           </div>
         </div>
       </div>

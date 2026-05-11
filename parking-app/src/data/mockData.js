@@ -17,6 +17,8 @@ export const mockUsers = {
     balance: 150000,
     phone: "0901234567",
     avatar: null,
+    username: "2212345",
+    password: "hcmut123",
   },
   visitor: {
     id: 2,
@@ -43,7 +45,15 @@ export const mockUsers = {
     balance: 0,
     phone: "0923456789",
     avatar: null,
+    username: "admin",
+    password: "admin123",
   },
+};
+
+// Demo credentials surfaced on the login screen
+export const demoCredentials = {
+  student: { username: "2212345", password: "hcmut123" },
+  admin: { username: "admin", password: "admin123" },
 };
 
 // Default user for backwards compatibility
@@ -57,7 +67,8 @@ export const parkingZones = [
     description: "Near the main lecture halls and administration building",
     total: 120,
     occupied: 45,
-    rate: 5000, // VND per hour
+    rate: 5000,
+    billingPeriod: "hour", // "hour" | "day"
     openHours: "06:00 – 22:00",
     type: "motorcycle",
     floors: 1,
@@ -70,6 +81,7 @@ export const parkingZones = [
     total: 80,
     occupied: 78,
     rate: 4000,
+    billingPeriod: "hour",
     openHours: "06:00 – 23:00",
     type: "motorcycle",
     floors: 1,
@@ -82,6 +94,7 @@ export const parkingZones = [
     total: 200,
     occupied: 152,
     rate: 5000,
+    billingPeriod: "hour",
     openHours: "06:00 – 22:00",
     type: "motorcycle",
     floors: 2,
@@ -166,10 +179,11 @@ export function getZoneStatus(zone) {
   return "available";
 }
 
-// Helper: format VND currency
+// Helper: format VND currency. Uses en-US grouping (1,000) to match the English UI;
+// the symbol stays as the Vietnamese đồng "₫".
 export function formatVND(amount) {
   const absAmount = Math.abs(amount);
-  return new Intl.NumberFormat("vi-VN").format(absAmount) + "₫";
+  return new Intl.NumberFormat("en-US").format(absAmount) + "₫";
 }
 
 // Helper: format duration from minutes
@@ -179,6 +193,26 @@ export function formatDuration(totalMinutes) {
   if (hours === 0) return `${minutes}m`;
   if (minutes === 0) return `${hours}h`;
   return `${hours}h ${minutes}m`;
+}
+
+// Helper: format zone rate label, e.g. "5,000₫/hr" or "30,000₫/day"
+export function formatRate(zone) {
+  if (!zone) return "—";
+  const period = zone.billingPeriod === "day" ? "day" : "hr";
+  return `${formatVND(zone.rate)}/${period}`;
+}
+
+// Helper: compute parking cost for a zone given a duration in minutes.
+// Hourly billing rounds up to the next hour. Daily billing rounds up to the next 24h block.
+export function computeZoneCost(zone, durationMinutes) {
+  if (!zone) return 0;
+  const minutes = Math.max(1, Math.ceil(durationMinutes));
+  if (zone.billingPeriod === "day") {
+    const days = Math.max(1, Math.ceil(minutes / (60 * 24)));
+    return days * zone.rate;
+  }
+  const hours = minutes / 60;
+  return Math.ceil(hours * zone.rate);
 }
 
 // ─── Visitor / Temporary Ticket Pricing ───
@@ -279,6 +313,72 @@ export const defaultPrivileges = [
     discount: 0,
     monthlyCap: 0,
     reservedWindow: "06:00 – 22:00",
+  },
+];
+
+// ─── Admin: Revenue analytics (mock) ───
+export const revenueWeekly = [
+  { day: "Mon", revenue: 1850000, sessions: 132 },
+  { day: "Tue", revenue: 2010000, sessions: 145 },
+  { day: "Wed", revenue: 2240000, sessions: 162 },
+  { day: "Thu", revenue: 2120000, sessions: 154 },
+  { day: "Fri", revenue: 2680000, sessions: 188 },
+  { day: "Sat", revenue: 1980000, sessions: 138 },
+  { day: "Sun", revenue: 1420000, sessions: 96 },
+];
+
+export const revenueByZone = [
+  { zoneId: "A", revenue: 4_650_000, sessions: 312 },
+  { zoneId: "B", revenue: 3_120_000, sessions: 248 },
+  { zoneId: "C", revenue: 6_530_000, sessions: 455 },
+];
+
+export const revenueByVehicle = [
+  { type: "motorcycle", label: "Motorcycle", revenue: 6_840_000, share: 0.48 },
+  { type: "car", label: "Car", revenue: 6_460_000, share: 0.45 },
+  { type: "bicycle", label: "Bicycle", revenue: 1_000_000, share: 0.07 },
+];
+
+export const revenueRecentPayments = [
+  {
+    id: "PAY-2218",
+    time: "09:12",
+    plate: "59A-12345",
+    zone: "Zone C",
+    method: "MoMo",
+    amount: 18000,
+  },
+  {
+    id: "PAY-2217",
+    time: "09:08",
+    plate: "51G-67890",
+    zone: "Zone A",
+    method: "Cash",
+    amount: 12000,
+  },
+  {
+    id: "PAY-2216",
+    time: "09:01",
+    plate: "59B-22311",
+    zone: "Zone B",
+    method: "Card",
+    amount: 7000,
+  },
+  {
+    id: "PAY-2215",
+    time: "08:54",
+    plate: "61T-44721",
+    zone: "Zone C",
+    method: "VNPay",
+    amount: 25000,
+  },
+  {
+    id: "PAY-2214",
+    time: "08:47",
+    plate: "59A-99102",
+    zone: "Zone A",
+    method: "Wallet",
+    amount: 5000,
   },
 ];
 

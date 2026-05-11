@@ -1,6 +1,6 @@
 import { useApp } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { formatVND, getZoneStatus } from "../data/mockData";
+import { formatVND, getZoneStatus, formatRate } from "../data/mockData";
 import {
   Car,
   Clock,
@@ -176,7 +176,7 @@ export default function DashboardPage() {
               <div>
                 <span className="title-md">{bestZone.name} – {bestZone.subtitle}</span>
                 <span className="label-md">
-                  {bestZone.total - bestZone.occupied} spots · {formatVND(bestZone.rate)}/hr
+                  {bestZone.total - bestZone.occupied} spots · {formatRate(bestZone)}
                 </span>
               </div>
             </div>

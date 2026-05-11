@@ -82,7 +82,7 @@ export default function AccountPage() {
           </div>
           <button
             className="btn btn-outline"
-            onClick={() => navigate("/billing")}
+            onClick={() => navigate("/topup")}
             style={{ padding: "0.5rem 1rem", fontSize: "0.75rem" }}
           >
             Top up

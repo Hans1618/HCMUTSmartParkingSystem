@@ -2,16 +2,16 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 0 var(--space-md);
-  height: 52px;
-  background: rgba(249, 249, 253, 0.85);
+  padding: 40px var(--space-md) 0;
+  background: rgba(249, 249, 253, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 rgba(25, 28, 30, 0.04);
 }
 
 .navbar-inner {
   width: 100%;
-  height: 100%;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -103,32 +103,51 @@
   transform: scale(1.05);
 }
 
+.navbar-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface-container);
+  color: var(--on-surface-variant);
+  transition: all var(--transition-fast);
+}
+
+.navbar-exit:hover {
+  background: var(--error-container);
+  color: var(--error);
+}
+
 /* Bottom Navigation */
 .bottom-nav {
   position: sticky;
   bottom: 0;
   z-index: 100;
-  padding: var(--space-xs) var(--space-sm);
-  padding-bottom: var(--space-xs);
+  padding: 6px 4px calc(var(--space-xs) + 2px);
   display: flex;
   justify-content: space-around;
+  align-items: stretch;
+  gap: 2px;
   width: 100%;
   background: rgba(249, 249, 253, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 -1px 0 rgba(25, 28, 30, 0.04);
 }
 
 .bottom-nav-item {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
-  padding: 4px 10px;
+  gap: 2px;
+  padding: 6px 4px;
   border-radius: var(--radius-lg);
   color: var(--on-surface-variant);
   transition: all var(--transition-fast);
   position: relative;
-  font-size: 0;
 }
 
 .bottom-nav-item:hover {
@@ -146,7 +165,7 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
+  width: 18px;
   height: 2px;
   background: var(--primary);
   border-radius: 0 0 var(--radius-full) var(--radius-full);
@@ -154,5 +173,16 @@
 
 .bottom-nav-item .label-sm {
   color: inherit;
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.1;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bottom-nav-item.active .label-sm {
+  font-weight: 600;
 }

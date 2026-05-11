@@ -7,6 +7,8 @@ import {
   Briefcase,
   UserRound,
   Wallet,
+  Clock,
+  Calendar,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { formatVND } from "../data/mockData";
@@ -22,7 +24,16 @@ export default function AdminPricingPage() {
   const { zones, privileges, updateZoneRate, updatePrivilege } = useApp();
 
   const [drafts, setDrafts] = useState(() =>
-    zones.reduce((acc, z) => ({ ...acc, [z.id]: z.rate }), {})
+    zones.reduce(
+      (acc, z) => ({
+        ...acc,
+        [z.id]: {
+          rate: z.rate,
+          period: z.billingPeriod === "day" ? "day" : "hour",
+        },
+      }),
+      {}
+    )
   );
   const [privDrafts, setPrivDrafts] = useState(() =>
     privileges.reduce(
@@ -44,13 +55,27 @@ export default function AdminPricingPage() {
   };
 
   const saveRate = (zoneId) => {
-    updateZoneRate(zoneId, drafts[zoneId]);
+    const draft = drafts[zoneId] || { rate: 0, period: "hour" };
+    updateZoneRate(zoneId, draft.rate, draft.period);
     showToast("Zone rate updated");
   };
 
   const resetRate = (zoneId) => {
-    const original = zones.find((z) => z.id === zoneId)?.rate ?? 0;
-    setDrafts((prev) => ({ ...prev, [zoneId]: original }));
+    const original = zones.find((z) => z.id === zoneId);
+    setDrafts((prev) => ({
+      ...prev,
+      [zoneId]: {
+        rate: original?.rate ?? 0,
+        period: original?.billingPeriod === "day" ? "day" : "hour",
+      },
+    }));
+  };
+
+  const updateDraftField = (zoneId, patch) => {
+    setDrafts((prev) => ({
+      ...prev,
+      [zoneId]: { ...prev[zoneId], ...patch },
+    }));
   };
 
   const savePrivilege = (role) => {
@@ -78,11 +103,16 @@ export default function AdminPricingPage() {
 
       {/* Zone rates */}
       <div className="admin-section animate-fade-in">
-        <h2 className="title-md admin-section-title">Zone rates (VND / hour)</h2>
+        <h2 className="title-md admin-section-title">Zone rates</h2>
         <div className="pricing-grid stagger-children">
           {zones.map((z) => {
-            const draft = drafts[z.id];
-            const dirty = Number(draft) !== Number(z.rate);
+            const draft = drafts[z.id] || { rate: z.rate, period: "hour" };
+            const currentPeriod = z.billingPeriod === "day" ? "day" : "hour";
+            const dirty =
+              Number(draft.rate) !== Number(z.rate) ||
+              draft.period !== currentPeriod;
+            const periodSuffix = draft.period === "day" ? "day" : "hr";
+            const step = draft.period === "day" ? 1000 : 500;
             return (
               <div key={z.id} className="pricing-card card">
                 <div className="pricing-card-top">
@@ -95,28 +125,59 @@ export default function AdminPricingPage() {
                 </div>
 
                 <div className="pricing-card-body">
-                  <label className="input-label" htmlFor={`rate-${z.id}`}>
-                    Hourly rate
+                  <label className="input-label">Billing period</label>
+                  <div
+                    className="pricing-period-toggle"
+                    role="tablist"
+                    aria-label="Billing period"
+                  >
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={draft.period === "hour"}
+                      className={`pricing-period-btn ${draft.period === "hour" ? "active" : ""}`}
+                      onClick={() => updateDraftField(z.id, { period: "hour" })}
+                    >
+                      <Clock size={14} />
+                      Per hour
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={draft.period === "day"}
+                      className={`pricing-period-btn ${draft.period === "day" ? "active" : ""}`}
+                      onClick={() => updateDraftField(z.id, { period: "day" })}
+                    >
+                      <Calendar size={14} />
+                      Per day
+                    </button>
+                  </div>
+
+                  <label
+                    className="input-label"
+                    htmlFor={`rate-${z.id}`}
+                    style={{ marginTop: "var(--space-sm)" }}
+                  >
+                    Rate ({draft.period === "day" ? "VND / day" : "VND / hour"})
                   </label>
                   <div className="pricing-input-row">
                     <input
                       id={`rate-${z.id}`}
                       type="number"
                       min="0"
-                      step="500"
+                      step={step}
                       className="input-field"
-                      value={draft}
+                      value={draft.rate}
                       onChange={(e) =>
-                        setDrafts((prev) => ({
-                          ...prev,
-                          [z.id]: Number(e.target.value),
-                        }))
+                        updateDraftField(z.id, {
+                          rate: Number(e.target.value),
+                        })
                       }
                     />
                     <span className="label-md">VND</span>
                   </div>
                   <span className="label-sm pricing-preview">
-                    Preview · {formatVND(draft || 0)}/hr
+                    Preview · {formatVND(draft.rate || 0)}/{periodSuffix}
                   </span>
                 </div>
 

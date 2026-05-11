@@ -1,6 +1,6 @@
 import { useApp } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { formatVND } from "../data/mockData";
+import { formatVND, computeZoneCost } from "../data/mockData";
 import SessionTimer from "../components/SessionTimer";
 import { MapPin, Car, CreditCard, LogOut } from "lucide-react";
 import StatusChip from "../components/StatusChip";
@@ -33,8 +33,16 @@ export default function ActiveSessionPage() {
     );
   }
 
-  const elapsed = Math.max(1, Math.ceil((Date.now() - new Date(activeSession.checkInTime).getTime()) / 60000));
-  const estimatedCost = Math.ceil((elapsed / 60) * activeSession.rate);
+  const elapsed = Math.max(
+    1,
+    Math.ceil((Date.now() - new Date(activeSession.checkInTime).getTime()) / 60000)
+  );
+  const period = activeSession.billingPeriod === "day" ? "day" : "hour";
+  const estimatedCost = computeZoneCost(
+    { rate: activeSession.rate, billingPeriod: period },
+    elapsed
+  );
+  const rateLabel = `${formatVND(activeSession.rate)}/${period === "day" ? "day" : "hr"}`;
 
   return (
     <div className="page-container" id="session-page">
@@ -85,7 +93,7 @@ export default function ActiveSessionPage() {
 
       {/* Rate Info */}
       <div className="session-rate-info animate-fade-in">
-        <span className="label-md">Rate: {formatVND(activeSession.rate)}/hr</span>
+        <span className="label-md">Rate: {rateLabel}</span>
       </div>
 
       {/* Check Out */}

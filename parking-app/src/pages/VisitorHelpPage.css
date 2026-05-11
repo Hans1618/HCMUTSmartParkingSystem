@@ -1,0 +1,88 @@
+.visitor-help-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding-top: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.visitor-help-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-xl);
+  background: var(--tertiary-fixed);
+  color: var(--tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-xs);
+}
+
+.visitor-help-section {
+  margin-bottom: var(--space-lg);
+}
+
+.visitor-help-section-title {
+  color: var(--on-surface-variant);
+  margin-bottom: var(--space-sm);
+}
+
+.visitor-help-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.visitor-help-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.visitor-help-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
+  background: var(--tertiary-fixed);
+  color: var(--tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.visitor-help-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.visitor-help-card-text .body-sm {
+  color: var(--on-surface-variant);
+}
+
+.visitor-help-contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.visitor-help-contact-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  color: var(--primary);
+}
+
+.visitor-help-contact-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.visitor-help-contact-row .title-sm {
+  color: var(--on-surface);
+}

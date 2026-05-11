@@ -14,10 +14,13 @@ import VisitorEntryPage from "./pages/VisitorEntryPage";
 import VisitorTicketPage from "./pages/VisitorTicketPage";
 import VisitorCheckoutPage from "./pages/VisitorCheckoutPage";
 import VisitorPaymentPage from "./pages/VisitorPaymentPage";
+import VisitorHelpPage from "./pages/VisitorHelpPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminPoliciesPage from "./pages/AdminPoliciesPage";
 import AdminPricingPage from "./pages/AdminPricingPage";
 import AdminLogsPage from "./pages/AdminLogsPage";
+import AdminRevenuePage from "./pages/AdminRevenuePage";
+import TopUpPage from "./pages/TopUpPage";
 
 function ProtectedRoute({ children, allow }) {
   const { user } = useApp();
@@ -87,8 +90,16 @@ function AppRoutes() {
         <Route
           path="/account"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allow={["student", "admin"]}>
               <AccountPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/topup"
+          element={
+            <ProtectedRoute allow={["student"]}>
+              <TopUpPage />
             </ProtectedRoute>
           }
         />
@@ -126,6 +137,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/visitor/help"
+          element={
+            <ProtectedRoute allow={["visitor"]}>
+              <VisitorHelpPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin routes */}
         <Route
@@ -157,6 +176,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute allow={["admin"]}>
               <AdminLogsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/revenue"
+          element={
+            <ProtectedRoute allow={["admin"]}>
+              <AdminRevenuePage />
             </ProtectedRoute>
           }
         />

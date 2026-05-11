@@ -13,11 +13,13 @@ import {
   FileText,
   Sliders,
   Activity,
+  TrendingUp,
+  HelpCircle,
 } from "lucide-react";
 import "./Navbar.css";
 
 export function TopBar() {
-  const { user, activeSession, visitorTicket } = useApp();
+  const { user, activeSession, visitorTicket, logout } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,9 +36,15 @@ export function TopBar() {
         : "/dashboard";
 
   const showBack = location.pathname !== homePath && location.pathname !== "/";
+  const isVisitor = user.role === "visitor";
+
+  const handleVisitorExit = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
-    <header className="navbar glass" id="main-navbar">
+    <header className="navbar" id="main-navbar">
       <div className="navbar-inner">
         <div className="navbar-left">
           {showBack ? (
@@ -71,7 +79,7 @@ export function TopBar() {
               <span className="label-sm">Active</span>
             </div>
           )}
-          {visitorTicket && user.role === "visitor" && (
+          {visitorTicket && isVisitor && (
             <div
               className="navbar-session-indicator"
               onClick={() => navigate("/visitor/ticket")}
@@ -80,13 +88,24 @@ export function TopBar() {
               <span className="label-sm">Ticket</span>
             </div>
           )}
-          <button
-            className="navbar-avatar"
-            onClick={() => navigate("/account")}
-            title="Account"
-          >
-            <span>{user.name.charAt(0)}</span>
-          </button>
+          {isVisitor ? (
+            <button
+              className="navbar-exit"
+              onClick={handleVisitorExit}
+              title="Exit"
+            >
+              <LogOut size={16} />
+              <span className="label-sm">Exit</span>
+            </button>
+          ) : (
+            <button
+              className="navbar-avatar"
+              onClick={() => navigate("/account")}
+              title="Account"
+            >
+              <span>{user.name.charAt(0)}</span>
+            </button>
+          )}
         </div>
       </div>
     </header>
@@ -102,18 +121,19 @@ const STUDENT_NAV = [
 
 const VISITOR_NAV_ENTRY = [
   { path: "/visitor/entry", icon: Ticket, label: "Entry" },
-  { path: "/account", icon: UserRound, label: "Profile" },
+  { path: "/visitor/help", icon: HelpCircle, label: "Help" },
   { path: "/", icon: LogOut, label: "Exit", isLogout: true },
 ];
 
 const VISITOR_NAV_ACTIVE = [
   { path: "/visitor/ticket", icon: Ticket, label: "Ticket" },
   { path: "/visitor/checkout", icon: CreditCard, label: "Check-out" },
-  { path: "/account", icon: UserRound, label: "Profile" },
+  { path: "/", icon: LogOut, label: "Exit", isLogout: true },
 ];
 
 const ADMIN_NAV = [
   { path: "/admin", icon: ShieldCheck, label: "Overview" },
+  { path: "/admin/revenue", icon: TrendingUp, label: "Revenue" },
   { path: "/admin/policies", icon: FileText, label: "Policies" },
   { path: "/admin/pricing", icon: Sliders, label: "Pricing" },
   { path: "/admin/logs", icon: Activity, label: "Logs" },

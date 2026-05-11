@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { formatVND } from "../data/mockData";
+import { formatVND, computeZoneCost } from "../data/mockData";
 import { MapPin, Clock, Car, CreditCard, CheckCircle2 } from "lucide-react";
 import "./CheckOutPage.css";
 
@@ -23,9 +23,18 @@ export default function CheckOutPage() {
   const durationMinutes = Math.max(1, Math.ceil(durationMs / 60000));
   const hours = Math.floor(durationMinutes / 60);
   const mins = durationMinutes % 60;
+  const period = session.billingPeriod === "day" ? "day" : "hour";
   const cost = completed
     ? completed.cost
-    : Math.ceil((durationMinutes / 60) * session.rate);
+    : computeZoneCost(
+        { rate: session.rate, billingPeriod: period },
+        durationMinutes
+      );
+  const rateLabel = `${formatVND(session.rate)}/${period === "day" ? "day" : "hr"}`;
+  const days =
+    period === "day"
+      ? Math.max(1, Math.ceil(durationMinutes / (60 * 24)))
+      : null;
 
   const handleCheckOut = () => {
     setProcessing(true);
@@ -77,7 +86,10 @@ export default function CheckOutPage() {
               <div>
                 <span className="label-md">Total cost</span>
                 <span className="label-sm">
-                  {formatVND(session.rate)}/hr × {hours}h {mins}m
+                  {rateLabel}{" "}
+                  {period === "day"
+                    ? `× ${days} day${days > 1 ? "s" : ""}`
+                    : `× ${hours}h ${mins}m`}
                 </span>
               </div>
               <span className="headline-md checkout-cost-amount">{formatVND(cost)}</span>

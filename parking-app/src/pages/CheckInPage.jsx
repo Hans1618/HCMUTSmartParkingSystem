@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { formatVND } from "../data/mockData";
+import { formatRate } from "../data/mockData";
 import StatusChip from "../components/StatusChip";
 import { MapPin, Clock, Car, CheckCircle } from "lucide-react";
 import "./CheckInPage.css";
@@ -59,7 +59,9 @@ export default function CheckInPage() {
           </div>
           <div className="checkin-detail-row">
             <Car size={16} color="var(--on-surface-variant)" />
-            <span className="body-md">{formatVND(zone.rate)} per hour</span>
+            <span className="body-md">
+              {formatRate(zone).replace("/hr", " per hour").replace("/day", " per day")}
+            </span>
           </div>
         </div>
       </div>

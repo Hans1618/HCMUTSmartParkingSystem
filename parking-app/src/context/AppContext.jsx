@@ -9,6 +9,7 @@ import {
   defaultAuditLogs,
   issueVisitorTicket,
   computeVisitorFee,
+  computeZoneCost,
 } from "../data/mockData";
 
 const AppContext = createContext(null);
@@ -29,13 +30,25 @@ export function AppProvider({ children }) {
   const [privileges, setPrivileges] = useState(defaultPrivileges);
   const [auditLogs, setAuditLogs] = useState(defaultAuditLogs);
 
-  // Login with role selection
-  const login = useCallback((role = "student") => {
+  // Login with role selection (and credential validation for member / admin)
+  const login = useCallback((role = "student", credentials = null) => {
     const selectedUser = mockUsers[role] || mockUsers.student;
+
+    if (role === "student" || role === "admin") {
+      if (
+        !credentials ||
+        credentials.username?.trim() !== selectedUser.username ||
+        credentials.password !== selectedUser.password
+      ) {
+        return { ok: false, error: "Incorrect username or password." };
+      }
+    }
+
     setUser(selectedUser);
     setBalance(selectedUser.balance);
     setVisitorTicket(null);
     setVisitorReceipt(null);
+    return { ok: true };
   }, []);
 
   const logout = useCallback(() => {
@@ -64,6 +77,7 @@ export function AppProvider({ children }) {
         licensePlate: user.licensePlate,
         checkInTime: new Date(),
         rate: zone.rate,
+        billingPeriod: zone.billingPeriod || "hour",
       };
 
       setActiveSession(session);
@@ -86,8 +100,13 @@ export function AppProvider({ children }) {
     const now = new Date();
     const durationMs = now - new Date(activeSession.checkInTime);
     const durationMinutes = Math.max(1, Math.ceil(durationMs / 60000));
-    const durationHours = durationMinutes / 60;
-    const cost = Math.ceil(durationHours * activeSession.rate);
+    const cost = computeZoneCost(
+      {
+        rate: activeSession.rate,
+        billingPeriod: activeSession.billingPeriod || "hour",
+      },
+      durationMinutes
+    );
 
     const completedSession = {
       ...activeSession,
@@ -212,17 +231,23 @@ export function AppProvider({ children }) {
     }
   }, [policies]);
 
-  const updateZoneRate = useCallback((zoneId, newRate) => {
+  const updateZoneRate = useCallback((zoneId, newRate, newPeriod) => {
     const rate = Math.max(0, Number(newRate) || 0);
-    setZones((prev) => prev.map((z) => (z.id === zoneId ? { ...z, rate } : z)));
+    const period = newPeriod === "day" ? "day" : "hour";
+    setZones((prev) =>
+      prev.map((z) =>
+        z.id === zoneId ? { ...z, rate, billingPeriod: period } : z
+      )
+    );
+    const periodLabel = period === "day" ? "day" : "hr";
     setAuditLogs((prev) => [
       {
         id: `LOG-${Math.floor(Math.random() * 9999) + 2000}`,
         type: "audit",
         actor: "admin@hcmut.edu.vn",
         action: `Updated rate of Zone ${zoneId} → ${rate.toLocaleString(
-          "vi-VN"
-        )}₫/hr`,
+          "en-US"
+        )}₫/${periodLabel}`,
         severity: "info",
         timestamp: new Date().toISOString().slice(0, 16).replace("T", " "),
       },
@@ -251,6 +276,75 @@ export function AppProvider({ children }) {
     );
   }, []);
 
+  // ─── Member: top-up wallet ───
+  const topUpBalance = useCallback(({ amount, method }) => {
+    const value = Math.max(0, Number(amount) || 0);
+    if (value <= 0) return null;
+
+    const now = new Date();
+    const methodLabels = {
+      momo: "MoMo Wallet",
+      card: "Credit/Debit Card",
+      bank: "Bank Transfer",
+      vnpay: "VNPay",
+    };
+
+    const txn = {
+      id: `TXN-${Date.now()}`,
+      date: now.toISOString().split("T")[0],
+      time: now.toTimeString().slice(0, 5),
+      zone: `Top-up · ${methodLabels[method] || method}`,
+      duration: "—",
+      amount: value,
+      type: "topup",
+      status: "completed",
+    };
+
+    setTransactions((prev) => [txn, ...prev]);
+    setBalance((prev) => prev + value);
+
+    return { ...txn, method };
+  }, []);
+
+  // ─── Member: pay an outstanding amount with a method (wallet / momo / card) ───
+  const payAmount = useCallback(
+    ({ amount, method, description }) => {
+      const value = Math.max(0, Number(amount) || 0);
+      if (value <= 0) return { ok: false, error: "Invalid amount." };
+
+      if (method === "wallet" && balance < value) {
+        return { ok: false, error: "Insufficient wallet balance. Please top up first." };
+      }
+
+      const now = new Date();
+      const methodLabels = {
+        wallet: "HCMUT Wallet",
+        momo: "MoMo Wallet",
+        card: "Credit/Debit Card",
+        vnpay: "VNPay",
+      };
+
+      const txn = {
+        id: `TXN-${Date.now()}`,
+        date: now.toISOString().split("T")[0],
+        time: now.toTimeString().slice(0, 5),
+        zone: description || `Payment · ${methodLabels[method] || method}`,
+        duration: "—",
+        amount: -value,
+        type: "payment",
+        status: "completed",
+      };
+
+      setTransactions((prev) => [txn, ...prev]);
+      if (method === "wallet") {
+        setBalance((prev) => prev - value);
+      }
+
+      return { ok: true, txn };
+    },
+    [balance]
+  );
+
   const value = {
     user,
     zones,
@@ -275,6 +369,9 @@ export function AppProvider({ children }) {
     updateZoneRate,
     updatePrivilege,
     acknowledgeLog,
+    // Member wallet
+    topUpBalance,
+    payAmount,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
