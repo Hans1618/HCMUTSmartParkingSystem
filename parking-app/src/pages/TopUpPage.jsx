@@ -38,9 +38,9 @@ const METHODS = [
     tone: "secondary",
   },
   {
-    key: "bank",
-    label: "Bank transfer",
-    sub: "Vietcombank, Techcombank, BIDV...",
+    key: "bkpay",
+    label: "BKPay",
+    sub: "HCMUT campus payment system",
     icon: Building2,
     tone: "tertiary",
   },
